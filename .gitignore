@@ -11,3 +11,7 @@ fixtures/*.dat
 fixtures/*.sav
 *.dat
 !**/expected/*.dat
+
+# packaged output
+dist/
+build/AppIcon.icns
