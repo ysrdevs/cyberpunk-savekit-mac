@@ -136,6 +136,37 @@ dotnet run --project src/CP2077SaveKit.Cli -- setmoney   "$SAVE" out.dat 1000000
 dotnet run --project src/CP2077SaveKit.Cli -- roundtrip  "$SAVE" out.dat    # load + rewrite, integrity check
 ```
 
+## Packaging a distributable app (for release)
+
+`build/package-mac.sh` produces a notarized, double-click-ready `.dmg` and `.zip` that players can
+run with no .NET install and no Gatekeeper warnings. It publishes a self-contained arm64 build,
+wraps it in a `.app`, signs it with your Developer ID and hardened runtime, notarizes it with Apple,
+staples the ticket, and writes both artifacts to `dist/`.
+
+One-time setup (requires an Apple Developer account):
+
+```sh
+# 1. Create a "Developer ID Application" certificate in the Apple Developer portal,
+#    then find its identity string:
+security find-identity -v -p codesigning
+
+# 2. Store notarization credentials once as a keychain profile
+#    (app-specific password from https://account.apple.com > Sign-In and Security):
+xcrun notarytool store-credentials cp2077notary \
+  --apple-id "you@example.com" --team-id "YOURTEAMID" --password "app-specific-password"
+```
+
+Then build a release:
+
+```sh
+DEV_ID_APP="Developer ID Application: Your Name (YOURTEAMID)" \
+NOTARY_PROFILE="cp2077notary" \
+VERSION=1.0.0 \
+build/package-mac.sh
+```
+
+An optional app icon is used if present at `build/AppIcon.icns`.
+
 ## Safety
 
 - The save format is version locked. Always keep a backup of a working save before editing.
