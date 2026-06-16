@@ -45,10 +45,15 @@ version-locked; a mismatch can brick a save.**
 1. [x] Scaffold solution: `Core` lib (refs WolvenKit.RED4) + `App` (Avalonia) + a CLI for testing.
        DONE 2026-06-16 — all three build clean (0 errors), CLI runs. Core wraps WolvenKit
        reader/writer (`SaveFile.cs`) + node→JSON dumper (`NodeDump.cs`).
-2. [~] Core: load `sav.dat` → node tree → dump to JSON (READ ONLY first). Code written
-       (`cli info|dump`); UNTESTED — needs a real save (game installing). Test the moment one exists.
+2. [x] Core: load `sav.dat` → node tree → dump to JSON. DONE + VERIFIED 2026-06-16 against a
+       real **patch 2.3 (v2310)** save: 86 top-level nodes parsed; `inventory` + 1636 `itemData`,
+       `StatsSystem`, `StatPoolsSystem`, `ScriptableSystemsContainer`, `FactsDB` all present.
 3. [ ] Parse inventory into readable item list (TweakDBID + qty) via `items.bin`.
-4. [ ] Write-back: edit a value, re-serialize, fix sizes + hashes. Round-trip test in game.
+4. [~] Write-back: re-serialize. Untouched round-trip preserves ALL 86 nodes + counts (verified
+       by node-inventory diff); output ~260 KB smaller = WolvenKit LZ4 level differs from CDPR's,
+       NOT data loss. PENDING in-game acceptance test: load slot `ManualSave-90` (additive test
+       slot holding the untouched round-tripped save; real saves untouched, orig backed up in
+       `fixtures/test.sav.dat`). If it loads clean → write-back is sound, proceed to edits.
 5. [ ] GUI: tabs for Inventory / Attributes / Perks / Appearance / Facts.
 6. [ ] Polish: backups, validation, version detection.
 
