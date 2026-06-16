@@ -92,6 +92,12 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void OpenSupport()
+    {
+        try { System.Diagnostics.Process.Start("open", "https://ko-fi.com/ysrdevs"); } catch { /* ignore */ }
+    }
+
+    [RelayCommand]
     public void RefreshSaves()
     {
         SaveList.Clear();
