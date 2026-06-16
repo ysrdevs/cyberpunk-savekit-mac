@@ -52,8 +52,17 @@ version-locked; a mismatch can brick a save.**
 4. [x] Write-back VERIFIED 2026-06-16: round-tripped slot `ManualSave-90` loaded clean in-game
        (walked around, inventory intact). Untouched round-trip preserves ALL 86 nodes + counts;
        ~260 KB smaller = WolvenKit LZ4 level differs from CDPR's, NOT data loss. WRITE-BACK IS SOUND.
-5. [ ] GUI: tabs for Inventory / Attributes / Perks / Appearance / Facts.
-6. [ ] Polish: backups, validation, version detection.
+5. [~] GUI (Avalonia): v1 DONE 2026-06-16 — Open Save…, Eddies editor, searchable
+       inventory list with editable quantities, Save As… (auto-backup). Builds + runs
+       native. TODO: Attributes / Perks / Appearance / Facts tabs; add/remove items.
+6. [~] Polish: timestamped .bak on overwrite DONE. TODO: validation, version-match warning.
+
+### Name resolution (DONE, improvable)
+items.bin (CyberCAT) = 4-byte header + gzip of length-prefixed names (~1.96M). Decompress with
+native GZipStream (no Oodle). Hash = CRC32(name)+(len<<32). Coverage ~47% on a 2.3 save (old
+dict; base items resolve, DLC/2.x don't). `TweakDbNames` is pluggable — swap a current dump for
+full coverage. WolvenKit's tweakdbstr.kark is more current but Kraken-compressed and its bundled
+libkraken.dylib is x86_64-only (won't load in our arm64 process) — would need an arm64 build.
 
 ### Status blocker
 Need a **real save file** to test parsing/round-trip. Game is installing as of 2026-06-16.
