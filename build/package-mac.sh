@@ -99,17 +99,13 @@ cat > "$ENT" <<ENTL
 </dict></plist>
 ENTL
 
-echo "==> Signing every nested Mach-O (dylibs + helper executables)…"
-while IFS= read -r -d '' f; do
-  if file -b "$f" | grep -q "Mach-O"; then
-    codesign --force --options runtime --timestamp --sign "$DEV_ID_APP" "$f"
-  fi
-done < <(find "$APP_DIR/Contents/MacOS" -type f -print0)
-
-echo "==> Signing the app bundle (with entitlements)…"
-codesign --force --options runtime --timestamp \
+echo "==> Signing the app (deep, hardened runtime, entitlements)…"
+# --deep recursively signs all nested Mach-O (the .NET runtime dylibs, Avalonia/Skia
+# natives, helper executables) and seals the managed assemblies. This is the reliable
+# path for self-contained .NET app bundles; a non-deep sign trips on managed .dll files.
+codesign --force --deep --options runtime --timestamp \
   --entitlements "$ENT" --sign "$DEV_ID_APP" "$APP_DIR"
-codesign --verify --strict --verbose=2 "$APP_DIR"
+codesign --verify --deep --strict --verbose=2 "$APP_DIR"
 
 echo "==> Submitting to Apple for notarization (this can take a few minutes)…"
 NZIP="$DIST/notarize.zip"
