@@ -19,6 +19,19 @@ public partial class ItemRow : ObservableObject
     public string HashHex => $"0x{Hash:X16}";
 }
 
+public partial class AttrRow : ObservableObject
+{
+    public string Name { get; init; } = "";
+    [ObservableProperty] private int _value;
+}
+
+public partial class PointsRow : ObservableObject
+{
+    public string Type { get; init; } = "";
+    public int Spent { get; init; }
+    [ObservableProperty] private int _unspent;
+}
+
 public partial class MainWindowViewModel : ObservableObject
 {
     private SaveFile? _save;
@@ -44,6 +57,11 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private CatalogItem? _selectedCatalogItem;
     [ObservableProperty] private uint _addQuantity = 1;
     public ObservableCollection<CatalogItem> CatalogResults { get; } = new();
+
+    // --- Attributes / Perks tab ---
+    [ObservableProperty] private bool _hasPlayerDev;
+    public ObservableCollection<AttrRow> Attributes { get; } = new();
+    public ObservableCollection<PointsRow> DevPoints { get; } = new();
 
     partial void OnSearchChanged(string value) => ApplyFilter();
     partial void OnCatalogSearchChanged(string value) => ApplyCatalogFilter();
@@ -85,7 +103,7 @@ public partial class MainWindowViewModel : ObservableObject
         try
         {
             // Heavy work (parse + name resolution for ~1600 items) off the UI thread.
-            var (save, rows, money) = await Task.Run(() =>
+            var r = await Task.Run(() =>
             {
                 var s = SaveFile.Load(path);
                 var list = new List<ItemRow>();
@@ -93,20 +111,29 @@ public partial class MainWindowViewModel : ObservableObject
                     foreach (var it in sub.Items)
                         list.Add(new ItemRow { Hash = it.IdHash, Display = it.Display, Quantity = it.Quantity });
                 var m = InventoryEditor.GetQuantity(s, InventoryEditor.MoneyHash);
-                return (s, list, m);
+                var attrs = PlayerDevelopment.ReadAttributes(s);
+                var pts = PlayerDevelopment.ReadDevPoints(s);
+                return (save: s, rows: list, money: m, attrs, pts);
             });
 
             // Back on the UI thread: publish results.
-            _save = save;
+            _save = r.save;
             LoadedPath = path;
             _allItems.Clear();
-            _allItems.AddRange(rows);
-            Money = money;
+            _allItems.AddRange(r.rows);
+            Money = r.money;
             ApplyFilter();
             ApplyCatalogFilter();
+
+            Attributes.Clear();
+            foreach (var a in r.attrs) Attributes.Add(new AttrRow { Name = a.Name, Value = a.Value });
+            DevPoints.Clear();
+            foreach (var d in r.pts) DevPoints.Add(new PointsRow { Type = d.Type, Spent = d.Spent, Unspent = d.Unspent });
+            HasPlayerDev = r.attrs.Count > 0;
+
             IsLoaded = true;
             var named = _allItems.Count(i => !i.Display.StartsWith("<unresolved"));
-            Status = $"Loaded {Path.GetFileName(Path.GetDirectoryName(path))} — v{save.GameVersion}, {_allItems.Count} items ({named} named).";
+            Status = $"Loaded {Path.GetFileName(Path.GetDirectoryName(path))} — v{r.save.GameVersion}, {_allItems.Count} items ({named} named).";
         }
         catch (Exception ex)
         {
@@ -138,11 +165,17 @@ public partial class MainWindowViewModel : ObservableObject
             var save = _save;
             var money = Money;
             var edits = _allItems.Select(r => (r.Hash, r.Quantity)).ToArray();
+            var attrEdits = Attributes.Select(a => (a.Name, a.Value)).ToArray();
+            var pointEdits = DevPoints.Select(d => (d.Type, d.Unspent)).ToArray();
             await Task.Run(() =>
             {
                 InventoryEditor.SetMoney(save, money);
                 foreach (var (hash, qty) in edits)
                     InventoryEditor.SetQuantity(save, hash, qty);
+                foreach (var (name, val) in attrEdits)
+                    PlayerDevelopment.SetAttribute(save, name, val);
+                foreach (var (type, unspent) in pointEdits)
+                    PlayerDevelopment.SetUnspentPoints(save, type, unspent);
                 if (File.Exists(path))
                     File.Copy(path, path + ".bak_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"), overwrite: false);
                 save.Save(path);

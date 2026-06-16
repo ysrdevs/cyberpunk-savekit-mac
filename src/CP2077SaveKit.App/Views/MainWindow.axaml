@@ -91,6 +91,41 @@
                     </Border>
                 </DockPanel>
             </TabItem>
+            <!-- ================= Attributes & Perks tab ================= -->
+            <TabItem Header="Attributes &amp; Perks">
+                <ScrollViewer>
+                    <StackPanel Spacing="14" Margin="2,8" IsEnabled="{Binding IsLoaded}">
+                        <TextBlock Text="Core Attributes" FontWeight="Bold"/>
+                        <ItemsControl ItemsSource="{Binding Attributes}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:AttrRow">
+                                    <Grid ColumnDefinitions="220,140" Margin="0,2">
+                                        <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center"/>
+                                        <TextBox  Grid.Column="1" Text="{Binding Value}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Text="Development Points (edit Unspent)" FontWeight="Bold" Margin="0,8,0,0"/>
+                        <ItemsControl ItemsSource="{Binding DevPoints}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:PointsRow">
+                                    <Grid ColumnDefinitions="220,140,Auto" Margin="0,2">
+                                        <TextBlock Grid.Column="0" Text="{Binding Type}" VerticalAlignment="Center"/>
+                                        <TextBox  Grid.Column="1" Text="{Binding Unspent}"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Spent, StringFormat='spent: {0}'}"
+                                                   VerticalAlignment="Center" Opacity="0.5" Margin="10,0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Opacity="0.55" TextWrapping="Wrap" Margin="0,6,0,0"
+                                   Text="Attribute caps are 20 in-game (the editor lets you set any value). 'Primary' points are perk points. Edits apply on Save As…"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
         </TabControl>
     </DockPanel>
 </Window>
