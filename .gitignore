@@ -1,0 +1,13 @@
+# build
+bin/
+obj/
+*.user
+# reference clones (huge; not part of our source)
+_refs/
+# .NET tooling
+.dotnet/
+# saves / test fixtures (never commit personal saves)
+fixtures/*.dat
+fixtures/*.sav
+*.dat
+!**/expected/*.dat
