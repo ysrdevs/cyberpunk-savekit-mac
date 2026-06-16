@@ -107,36 +107,44 @@ codesign --force --deep --options runtime --timestamp \
   --entitlements "$ENT" --sign "$DEV_ID_APP" "$APP_DIR"
 codesign --verify --deep --strict --verbose=2 "$APP_DIR"
 
-echo "==> Submitting to Apple for notarization (this can take a few minutes)…"
+# Submit a file (zip or dmg) to Apple notarization and wait for the result.
+notarize_submit() {
+  if [ -n "${NOTARY_PROFILE:-}" ]; then
+    xcrun notarytool submit "$1" --keychain-profile "$NOTARY_PROFILE" --wait
+  else
+    : "${APPLE_ID:?set NOTARY_PROFILE, or APPLE_ID + TEAM_ID + APP_PW}"
+    : "${TEAM_ID:?set TEAM_ID}"; : "${APP_PW:?set APP_PW}"
+    xcrun notarytool submit "$1" --apple-id "$APPLE_ID" --team-id "$TEAM_ID" --password "$APP_PW" --wait
+  fi
+}
+
+echo "==> Notarizing the app (this can take a few minutes)…"
 NZIP="$DIST/notarize.zip"
 ditto -c -k --keepParent "$APP_DIR" "$NZIP"
-if [ -n "${NOTARY_PROFILE:-}" ]; then
-  xcrun notarytool submit "$NZIP" --keychain-profile "$NOTARY_PROFILE" --wait
-else
-  : "${APPLE_ID:?set NOTARY_PROFILE, or APPLE_ID + TEAM_ID + APP_PW}"
-  : "${TEAM_ID:?set TEAM_ID}"; : "${APP_PW:?set APP_PW}"
-  xcrun notarytool submit "$NZIP" --apple-id "$APPLE_ID" --team-id "$TEAM_ID" --password "$APP_PW" --wait
-fi
+notarize_submit "$NZIP"
 rm -f "$NZIP"
 
-echo "==> Stapling the notarization ticket…"
+echo "==> Stapling the app…"
 xcrun stapler staple "$APP_DIR"
 spctl -a -vvv --type exec "$APP_DIR" || true   # Gatekeeper sanity check
 
-echo "==> Building distribution .zip …"
+echo "==> Building distribution .zip (from the stapled app)…"
 DIST_ZIP="$DIST/CP2077SaveKit-$VERSION-arm64.zip"
 rm -f "$DIST_ZIP"
 ditto -c -k --keepParent "$APP_DIR" "$DIST_ZIP"
 
-echo "==> Building .dmg …"
+echo "==> Building .dmg (from the stapled app)…"
 DMG="$DIST/CP2077SaveKit-$VERSION-arm64.dmg"
 STAGE="$DIST/dmg-stage"; rm -rf "$STAGE"; mkdir -p "$STAGE"
 cp -R "$APP_DIR" "$STAGE/"
 ln -s /Applications "$STAGE/Applications"
 rm -f "$DMG"
 hdiutil create -volname "$APP_NAME" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
-xcrun stapler staple "$DMG" || true
 rm -rf "$STAGE"
+
+echo "==> Notarizing + stapling the .dmg…"
+notarize_submit "$DMG"
+xcrun stapler staple "$DMG"
 
 echo
 echo "Done. Distribute these:"
