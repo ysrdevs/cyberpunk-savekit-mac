@@ -31,6 +31,13 @@ framework dependent build would be a few MB but would force every player to inst
 first, which defeats the goal of working for non-technical players. For a self contained .NET
 desktop app, this size is normal.
 
+## Support
+
+This is free and open source. If it saved you some hassle and you want to support development, you
+can buy me a coffee. Completely optional, and very appreciated.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/ysrdevs)
+
 ## What it does
 
 - Edit eddies (money) and any item quantity.
