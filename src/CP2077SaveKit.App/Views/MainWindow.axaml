@@ -1,12 +1,13 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:CP2077SaveKit.App.ViewModels"
+        xmlns:core="using:CP2077SaveKit.Core"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="640"
         x:Class="CP2077SaveKit.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Width="900" Height="640"
+        Width="940" Height="680"
         Title="CP2077 Save Kit">
 
     <Design.DataContext>
@@ -19,16 +20,7 @@
             <Button Name="OpenBtn" Content="Open Save…"/>
             <Button Name="SaveAsBtn" Content="Save As…" IsEnabled="{Binding IsLoaded}"/>
             <TextBlock Text="{Binding LoadedPath}" VerticalAlignment="Center" Opacity="0.7"
-                       TextTrimming="CharacterEllipsis" MaxWidth="560"/>
-        </StackPanel>
-
-        <!-- Money + search -->
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,12,0,8"
-                    IsEnabled="{Binding IsLoaded}">
-            <TextBlock Text="Eddies:" VerticalAlignment="Center"/>
-            <TextBox Text="{Binding Money}" Width="160"/>
-            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="16,0,0,0"/>
-            <TextBox Text="{Binding Search}" Width="280" Watermark="filter items by name or hash"/>
+                       TextTrimming="CharacterEllipsis" MaxWidth="600"/>
         </StackPanel>
 
         <!-- Status bar -->
@@ -36,21 +28,65 @@
             <TextBlock Text="{Binding Status}" TextWrapping="Wrap"/>
         </Border>
 
-        <!-- Inventory list -->
-        <Border BorderBrush="#33FFFFFF" BorderThickness="1" CornerRadius="4">
-            <ListBox ItemsSource="{Binding Items}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate x:DataType="vm:ItemRow">
-                        <Grid ColumnDefinitions="*,120,Auto">
-                            <TextBlock Grid.Column="0" Text="{Binding Display}" VerticalAlignment="Center"
-                                       TextTrimming="CharacterEllipsis"/>
-                            <TextBox  Grid.Column="1" Text="{Binding Quantity}" Margin="8,2"/>
-                            <TextBlock Grid.Column="2" Text="{Binding HashHex}" VerticalAlignment="Center"
-                                       Opacity="0.45" FontFamily="monospace" Margin="8,0,4,0"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Border>
+        <TabControl Margin="0,10,0,0">
+            <!-- ================= Inventory tab ================= -->
+            <TabItem Header="Inventory">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,8"
+                                IsEnabled="{Binding IsLoaded}">
+                        <TextBlock Text="Eddies:" VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding Money}" Width="160"/>
+                        <TextBlock Text="Search:" VerticalAlignment="Center" Margin="16,0,0,0"/>
+                        <TextBox Text="{Binding Search}" Width="300" Watermark="filter items by name or hash"/>
+                    </StackPanel>
+                    <Border BorderBrush="#33FFFFFF" BorderThickness="1" CornerRadius="4">
+                        <ListBox ItemsSource="{Binding Items}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ItemRow">
+                                    <Grid ColumnDefinitions="*,120,Auto">
+                                        <TextBlock Grid.Column="0" Text="{Binding Display}" VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBox  Grid.Column="1" Text="{Binding Quantity}" Margin="8,2"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding HashHex}" VerticalAlignment="Center"
+                                                   Opacity="0.45" FontFamily="monospace" Margin="8,0,4,0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Border>
+                </DockPanel>
+            </TabItem>
+
+            <!-- ================= Add Item tab ================= -->
+            <TabItem Header="Add Item">
+                <DockPanel IsEnabled="{Binding IsLoaded}">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,8">
+                        <TextBlock Text="Search:" VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding CatalogSearch}" Width="320"
+                                 Watermark="ammo, grenade, component, …"/>
+                        <TextBlock Text="Qty:" VerticalAlignment="Center" Margin="16,0,0,0"/>
+                        <TextBox Text="{Binding AddQuantity}" Width="100"/>
+                        <Button Content="Add Selected" Command="{Binding AddSelectedItemCommand}"/>
+                    </StackPanel>
+                    <TextBlock DockPanel.Dock="Bottom" Margin="2,6,0,0" Opacity="0.55" TextWrapping="Wrap"
+                               Text="v1 supports stackable items (Misc/Crafting: money, ammo, components, consumables, grenades). Weapons/cyberware/clothing coming next."/>
+                    <Border BorderBrush="#33FFFFFF" BorderThickness="1" CornerRadius="4">
+                        <ListBox ItemsSource="{Binding CatalogResults}"
+                                 SelectedItem="{Binding SelectedCatalogItem}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="core:CatalogItem">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Grid.Column="0" Text="{Binding Label}" VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Id}" VerticalAlignment="Center"
+                                                   Opacity="0.45" FontFamily="monospace" Margin="8,0,4,0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Border>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
     </DockPanel>
 </Window>

@@ -56,10 +56,24 @@ public sealed class AioCatalog
     /// <summary>The TweakDB code id for any catalog item (e.g. "Items.CommonMaterial1").</summary>
     public string? CodeId(ulong hash) => _idByHash.TryGetValue(hash, out var n) ? n : null;
 
-    public IEnumerable<CatalogItem> Search(string term, int limit = 300)
+    public IEnumerable<CatalogItem> Search(string term, int limit = 300) => Search(Items, term, limit);
+
+    // Sheets whose items are stackable (quantity-structured) and therefore safe to construct with
+    // the current Add-Item path. Weapons/Cyberware/Clothes/Mods need extended structure (mod slots).
+    private static readonly HashSet<string> StackableSheets = new(StringComparer.OrdinalIgnoreCase)
+        { "MISC", "CRAFTING" };
+
+    private List<CatalogItem>? _stackable;
+    public IReadOnlyList<CatalogItem> StackableItems =>
+        _stackable ??= Items.Where(i => i.Sheet is not null && StackableSheets.Contains(i.Sheet)).ToList();
+
+    public IEnumerable<CatalogItem> SearchStackable(string term, int limit = 300) =>
+        Search(StackableItems, term, limit);
+
+    private static IEnumerable<CatalogItem> Search(IEnumerable<CatalogItem> src, string term, int limit)
     {
-        if (string.IsNullOrWhiteSpace(term)) return Items.Take(limit);
-        return Items.Where(i =>
+        if (string.IsNullOrWhiteSpace(term)) return src.Take(limit);
+        return src.Where(i =>
             (i.Name?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false) ||
             i.Id.Contains(term, StringComparison.OrdinalIgnoreCase) ||
             (i.Type?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false))
