@@ -37,6 +37,12 @@ desktop app, this size is normal.
 Appearance and lifepath editing are intentionally out of scope, because those edits are known to
 corrupt saves.
 
+## Screenshots
+
+| Inventory | Add Item | Attributes and Perks |
+| --- | --- | --- |
+| ![Inventory tab](docs/screenshots/inventory.png) | ![Add Item tab](docs/screenshots/add-item.png) | ![Attributes and Perks tab](docs/screenshots/attributes.png) |
+
 ## Why these technologies
 
 The hard part of a save editor is not the UI, it is parsing REDengine's save format correctly and
@@ -108,8 +114,10 @@ The Core project references `WolvenKit.RED4` by relative path, so WolvenKit must
 `_refs/WolvenKit`.
 
 ```sh
-# 1. clone this repo, then fetch the parser dependency
+# 1. clone this repo, then fetch the parser dependency.
+#    WolvenKit's main branch moves, so check out the commit this was built and verified against.
 git clone https://github.com/WolvenKit/WolvenKit.git _refs/WolvenKit
+git -C _refs/WolvenKit checkout a5d01243d61d4b3985a208b66708662d8ecde8a1
 
 # 2. install .NET 8 if needed (official script, no sudo, installs to ~/.dotnet)
 curl -fsSL https://dot.net/v1/dotnet-install.sh | bash -s -- --channel 8.0 --install-dir "$HOME/.dotnet"
@@ -118,6 +126,8 @@ export PATH="$HOME/.dotnet:$PATH"
 # 3. build
 dotnet build CP2077SaveKit.sln -c Release
 ```
+
+A newer WolvenKit commit will probably still work, but the pinned one is the known-good build.
 
 ## Run
 
