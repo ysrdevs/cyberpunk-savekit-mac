@@ -229,5 +229,10 @@ Every risky write was confirmed by loading the result in the actual game on patc
 
 ## License
 
-This is a personal project. The bundled data files and the WolvenKit dependency are the property of
-their respective authors and are subject to their own licenses. Not affiliated with CD PROJEKT RED.
+This project's source code is released under the MIT License (see [LICENSE](LICENSE)). Free to use,
+modify, and distribute.
+
+Note that the bundled data files (`items.bin`, `ItemClasses.json`, and the AIO catalog) and the
+WolvenKit dependency are the property of their respective authors and remain under their own
+licenses. The MIT License covers this project's own code, not those third party assets. Not
+affiliated with CD PROJEKT RED.
