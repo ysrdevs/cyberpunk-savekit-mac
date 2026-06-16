@@ -71,7 +71,7 @@ public partial class MainWindowViewModel : ObservableObject
     private void ApplyCatalogFilter()
     {
         CatalogResults.Clear();
-        foreach (var c in AioCatalog.Shared.SearchStackable(CatalogSearch, 300))
+        foreach (var c in AioCatalog.Shared.Search(CatalogSearch, 300))
             CatalogResults.Add(c);
     }
 
@@ -83,17 +83,15 @@ public partial class MainWindowViewModel : ObservableObject
         var item = SelectedCatalogItem;
         var hash = TweakDbNames.TweakHash(item.Id);
         var qty = AddQuantity == 0 ? 1u : AddQuantity;
-        if (!InventoryEditor.AddOrSetStackable(_save, hash, qty))
-        {
-            Status = "Could not add (no inventory loaded).";
-            return;
-        }
-        // reflect in the inventory list
+        var type = InventoryEditor.AddItem(_save, hash, qty);
+        if (type is null) { Status = "Could not add (no inventory loaded)."; return; }
+
+        var label = item.Name ?? item.Id;
         var existing = _allItems.FirstOrDefault(r => r.Hash == hash);
-        if (existing is not null) existing.Quantity = qty;
-        else _allItems.Add(new ItemRow { Hash = hash, Display = item.Name ?? item.Id, Quantity = qty });
+        if (existing is not null) existing.Quantity = qty;          // stackable already present
+        else _allItems.Add(new ItemRow { Hash = hash, Display = label, Quantity = qty });
         ApplyFilter();
-        Status = $"Added {item.Name ?? item.Id} ×{qty} (unsaved — use Save As… then load in-game).";
+        Status = $"Added {label} ×{qty} [{type}] (unsaved — Save As… then load in-game).";
     }
 
     public async Task LoadFromPathAsync(string path)
