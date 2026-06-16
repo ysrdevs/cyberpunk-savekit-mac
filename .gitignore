@@ -20,3 +20,6 @@ dist/
 
 # Claude Code local config
 .claude/
+
+# internal design notes (not for the public repo)
+docs/ARCHITECTURE.md
