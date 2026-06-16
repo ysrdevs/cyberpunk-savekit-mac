@@ -30,7 +30,10 @@ public static class InventoryReader
             {
                 var tdbid = item.ItemInfo.ItemId.Id;
                 ulong hash = tdbid;                       // TweakDBID -> ulong (implicit)
-                string? name = TweakDbNames.Shared.Resolve(hash);
+                // friendly name (curated) -> items.bin code-name -> AIO code id (current items) -> hash
+                string? name = AioCatalog.Shared.FriendlyName(hash)
+                             ?? TweakDbNames.Shared.Resolve(hash)
+                             ?? AioCatalog.Shared.CodeId(hash);
                 items.Add(new InventoryItem(hash, name, item.Quantity, (byte)item.Flags));
             }
             result.Add(new SubInventoryView(sub.InventoryId, items));
