@@ -63,14 +63,25 @@ public partial class MainWindowViewModel : ObservableObject
         if (!Avalonia.Controls.Design.IsDesignMode) _ = CheckForUpdatesAsync();
     }
 
-    private async Task CheckForUpdatesAsync()
+    /// <summary>Manual "Check for Updates" button. Unlike the startup check, this reports back
+    /// even when you are already up to date.</summary>
+    [RelayCommand]
+    private Task CheckForUpdates() => CheckForUpdatesAsync(manual: true);
+
+    private async Task CheckForUpdatesAsync(bool manual = false)
     {
+        if (manual) Status = "Checking for updates...";
         var current = typeof(MainWindowViewModel).Assembly.GetName().Version ?? new Version(1, 0, 0, 0);
         var info = await UpdateChecker.CheckAsync(current);
-        if (info is null) return;
+        if (info is null)
+        {
+            if (manual) Status = $"You are on the latest version (v{current.ToString(3)}).";
+            return;
+        }
         _updateUrl = info.DownloadUrl;
         UpdateText = $"Update available: {info.LatestTag}. Click Download to get the new version, then drag it into Applications.";
         UpdateAvailable = true;
+        if (manual) Status = $"Update available: {info.LatestTag}.";
     }
 
     [RelayCommand]
