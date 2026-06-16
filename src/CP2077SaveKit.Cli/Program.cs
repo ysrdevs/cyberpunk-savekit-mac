@@ -50,6 +50,44 @@ try
             }
             break;
         }
+        case "setpoints":
+        {
+            if (args.Length < 5) { Console.Error.WriteLine("setpoints <save> <out.dat> <Type> <unspent>"); return 1; }
+            var save = SaveFile.Load(path);
+            var pdd = PlayerDevelopment.Find(save) ?? throw new SaveLoadException("no PlayerDevelopmentData");
+            if (!PlayerDevelopment.SetUnspentPoints(pdd, args[3], int.Parse(args[4]))) { Console.Error.WriteLine("type not found"); return 2; }
+            save.Save(args[2]);
+            Console.WriteLine($"Set {args[3]} unspent = {args[4]}. Wrote {args[2]}.");
+            break;
+        }
+        case "setattr":
+        {
+            if (args.Length < 5) { Console.Error.WriteLine("setattr <save> <out.dat> <Name> <value>"); return 1; }
+            var save = SaveFile.Load(path);
+            var pdd = PlayerDevelopment.Find(save) ?? throw new SaveLoadException("no PlayerDevelopmentData");
+            if (!PlayerDevelopment.SetAttribute(pdd, args[3], int.Parse(args[4]))) { Console.Error.WriteLine("attr not found"); return 2; }
+            save.Save(args[2]);
+            Console.WriteLine($"Set {args[3]} = {args[4]}. Wrote {args[2]}.");
+            break;
+        }
+        case "attrs":
+        {
+            var save = SaveFile.Load(path);
+            var pdd = PlayerDevelopment.Find(save);
+            if (pdd is null)
+            {
+                Console.WriteLine("PlayerDevelopmentData not a top-level chunk. Chunk types present:");
+                foreach (var t in PlayerDevelopment.ChunkTypeNames(save).Distinct()) Console.WriteLine("  " + t);
+                break;
+            }
+            Console.WriteLine("== Attributes ==");
+            foreach (var a in PlayerDevelopment.ReadAttributes(pdd)) Console.WriteLine($"  {a.Name,-18} {a.Value}");
+            Console.WriteLine("== Development Points ==");
+            foreach (var d in PlayerDevelopment.ReadDevPoints(pdd)) Console.WriteLine($"  {d.Type,-18} spent={d.Spent} unspent={d.Unspent}");
+            Console.WriteLine("== Proficiencies ==");
+            foreach (var p in PlayerDevelopment.ReadProficiencies(pdd)) Console.WriteLine($"  {p.Type,-22} lvl {p.Level}/{p.MaxLevel}");
+            break;
+        }
         case "qty":
         {
             var save = SaveFile.Load(path);
