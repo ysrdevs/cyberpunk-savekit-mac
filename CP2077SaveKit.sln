@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{711E7BDE-B8AF-482E-9991-8D8A375E55A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CP2077SaveKit.Core", "src\CP2077SaveKit.Core\CP2077SaveKit.Core.csproj", "{17AD4A85-4A91-4CE6-ABB7-DC7CC69E0222}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CP2077SaveKit.Cli", "src\CP2077SaveKit.Cli\CP2077SaveKit.Cli.csproj", "{1CCFF252-A2FF-45FF-ADDA-0B93D2B7B2F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CP2077SaveKit.App", "src\CP2077SaveKit.App\CP2077SaveKit.App.csproj", "{2A39D416-A6BA-4638-AD59-5704C59649D9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{17AD4A85-4A91-4CE6-ABB7-DC7CC69E0222}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17AD4A85-4A91-4CE6-ABB7-DC7CC69E0222}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17AD4A85-4A91-4CE6-ABB7-DC7CC69E0222}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17AD4A85-4A91-4CE6-ABB7-DC7CC69E0222}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CCFF252-A2FF-45FF-ADDA-0B93D2B7B2F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CCFF252-A2FF-45FF-ADDA-0B93D2B7B2F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CCFF252-A2FF-45FF-ADDA-0B93D2B7B2F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CCFF252-A2FF-45FF-ADDA-0B93D2B7B2F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A39D416-A6BA-4638-AD59-5704C59649D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A39D416-A6BA-4638-AD59-5704C59649D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A39D416-A6BA-4638-AD59-5704C59649D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A39D416-A6BA-4638-AD59-5704C59649D9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{17AD4A85-4A91-4CE6-ABB7-DC7CC69E0222} = {711E7BDE-B8AF-482E-9991-8D8A375E55A5}
+		{1CCFF252-A2FF-45FF-ADDA-0B93D2B7B2F1} = {711E7BDE-B8AF-482E-9991-8D8A375E55A5}
+		{2A39D416-A6BA-4638-AD59-5704C59649D9} = {711E7BDE-B8AF-482E-9991-8D8A375E55A5}
+	EndGlobalSection
+EndGlobal

@@ -42,8 +42,11 @@ the existing, maintained `WolvenKit.RED4` library** and build only a new cross-p
 version-locked; a mismatch can brick a save.**
 
 ### Build ladder
-1. [ ] Scaffold solution: `Core` lib (refs WolvenKit.RED4) + `App` (Avalonia) + a CLI for testing.
-2. [ ] Core: load `sav.dat` → node tree → dump to JSON (READ ONLY first). Test vs a real save.
+1. [x] Scaffold solution: `Core` lib (refs WolvenKit.RED4) + `App` (Avalonia) + a CLI for testing.
+       DONE 2026-06-16 — all three build clean (0 errors), CLI runs. Core wraps WolvenKit
+       reader/writer (`SaveFile.cs`) + node→JSON dumper (`NodeDump.cs`).
+2. [~] Core: load `sav.dat` → node tree → dump to JSON (READ ONLY first). Code written
+       (`cli info|dump`); UNTESTED — needs a real save (game installing). Test the moment one exists.
 3. [ ] Parse inventory into readable item list (TweakDBID + qty) via `items.bin`.
 4. [ ] Write-back: edit a value, re-serialize, fix sizes + hashes. Round-trip test in game.
 5. [ ] GUI: tabs for Inventory / Attributes / Perks / Appearance / Facts.
