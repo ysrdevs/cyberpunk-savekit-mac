@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CP2077SaveKit.Core;
 
 namespace CP2077SaveKit.App.ViewModels;
@@ -30,7 +31,42 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly List<ItemRow> _allItems = new();
     public ObservableCollection<ItemRow> Items { get; } = new();
 
+    // --- Add-Item picker (stackable items) ---
+    [ObservableProperty] private string _catalogSearch = "";
+    [ObservableProperty] private CatalogItem? _selectedCatalogItem;
+    [ObservableProperty] private uint _addQuantity = 1;
+    public ObservableCollection<CatalogItem> CatalogResults { get; } = new();
+
     partial void OnSearchChanged(string value) => ApplyFilter();
+    partial void OnCatalogSearchChanged(string value) => ApplyCatalogFilter();
+
+    private void ApplyCatalogFilter()
+    {
+        CatalogResults.Clear();
+        foreach (var c in AioCatalog.Shared.SearchStackable(CatalogSearch, 300))
+            CatalogResults.Add(c);
+    }
+
+    [RelayCommand]
+    private void AddSelectedItem()
+    {
+        if (_save is null) { Status = "Open a save first."; return; }
+        if (SelectedCatalogItem is null) { Status = "Pick an item from the list first."; return; }
+        var item = SelectedCatalogItem;
+        var hash = TweakDbNames.TweakHash(item.Id);
+        var qty = AddQuantity == 0 ? 1u : AddQuantity;
+        if (!InventoryEditor.AddOrSetStackable(_save, hash, qty))
+        {
+            Status = "Could not add (no inventory loaded).";
+            return;
+        }
+        // reflect in the inventory list
+        var existing = _allItems.FirstOrDefault(r => r.Hash == hash);
+        if (existing is not null) existing.Quantity = qty;
+        else _allItems.Add(new ItemRow { Hash = hash, Display = item.Name ?? item.Id, Quantity = qty });
+        ApplyFilter();
+        Status = $"Added {item.Name ?? item.Id} ×{qty} (unsaved — use Save As… then load in-game).";
+    }
 
     public void LoadFromPath(string path)
     {
@@ -47,6 +83,7 @@ public partial class MainWindowViewModel : ObservableObject
 
             Money = InventoryEditor.GetQuantity(_save, InventoryEditor.MoneyHash);
             ApplyFilter();
+            ApplyCatalogFilter();
             var named = _allItems.Count(i => !i.Display.StartsWith("<unresolved"));
             Status = $"Loaded {Path.GetFileName(Path.GetDirectoryName(path))} — v{_save.GameVersion}, {_allItems.Count} items ({named} named).";
         }
