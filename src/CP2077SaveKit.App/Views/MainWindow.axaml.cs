@@ -30,7 +30,7 @@ public partial class MainWindow : Window
             FileTypeFilter = new[] { new FilePickerFileType("CP2077 save") { Patterns = new[] { "sav.dat", "*.dat" } } }
         });
         var path = files.FirstOrDefault()?.TryGetLocalPath();
-        if (path is not null) Vm.LoadFromPath(path);
+        if (path is not null) await Vm.LoadFromPathAsync(path);
     }
 
     private async void OnSaveAs(object? sender, RoutedEventArgs e)
@@ -44,7 +44,7 @@ public partial class MainWindow : Window
             DefaultExtension = "dat"
         });
         var path = file?.TryGetLocalPath();
-        if (path is not null) Vm.SaveToPath(path);
+        if (path is not null) await Vm.SaveToPathAsync(path);
     }
 
     private async System.Threading.Tasks.Task<IStorageFolder?> StartFolder()

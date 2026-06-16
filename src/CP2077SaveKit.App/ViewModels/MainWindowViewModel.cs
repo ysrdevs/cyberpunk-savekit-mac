@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CP2077SaveKit.Core;
@@ -27,6 +28,13 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private uint _money;
     [ObservableProperty] private string _search = "";
     [ObservableProperty] private bool _isLoaded;
+    [ObservableProperty] private bool _isBusy;
+
+    public MainWindowViewModel()
+    {
+        // Warm the name dictionaries off the UI thread so the first save load is fast.
+        Task.Run(() => { _ = AioCatalog.Shared; _ = TweakDbNames.Shared; });
+    }
 
     private readonly List<ItemRow> _allItems = new();
     public ObservableCollection<ItemRow> Items { get; } = new();
@@ -68,30 +76,44 @@ public partial class MainWindowViewModel : ObservableObject
         Status = $"Added {item.Name ?? item.Id} ×{qty} (unsaved — use Save As… then load in-game).";
     }
 
-    public void LoadFromPath(string path)
+    public async Task LoadFromPathAsync(string path)
     {
+        if (IsBusy) return;
+        IsBusy = true;
+        IsLoaded = false;
+        Status = "Loading save…";
         try
         {
-            _save = SaveFile.Load(path);
+            // Heavy work (parse + name resolution for ~1600 items) off the UI thread.
+            var (save, rows, money) = await Task.Run(() =>
+            {
+                var s = SaveFile.Load(path);
+                var list = new List<ItemRow>();
+                foreach (var sub in InventoryReader.Read(s))
+                    foreach (var it in sub.Items)
+                        list.Add(new ItemRow { Hash = it.IdHash, Display = it.Display, Quantity = it.Quantity });
+                var m = InventoryEditor.GetQuantity(s, InventoryEditor.MoneyHash);
+                return (s, list, m);
+            });
+
+            // Back on the UI thread: publish results.
+            _save = save;
             LoadedPath = path;
-            IsLoaded = true;
-
             _allItems.Clear();
-            foreach (var sub in InventoryReader.Read(_save))
-                foreach (var it in sub.Items)
-                    _allItems.Add(new ItemRow { Hash = it.IdHash, Display = it.Display, Quantity = it.Quantity });
-
-            Money = InventoryEditor.GetQuantity(_save, InventoryEditor.MoneyHash);
+            _allItems.AddRange(rows);
+            Money = money;
             ApplyFilter();
             ApplyCatalogFilter();
+            IsLoaded = true;
             var named = _allItems.Count(i => !i.Display.StartsWith("<unresolved"));
-            Status = $"Loaded {Path.GetFileName(Path.GetDirectoryName(path))} — v{_save.GameVersion}, {_allItems.Count} items ({named} named).";
+            Status = $"Loaded {Path.GetFileName(Path.GetDirectoryName(path))} — v{save.GameVersion}, {_allItems.Count} items ({named} named).";
         }
         catch (Exception ex)
         {
             Status = $"ERROR loading: {ex.Message}";
             IsLoaded = false;
         }
+        finally { IsBusy = false; }
     }
 
     private void ApplyFilter()
@@ -105,27 +127,33 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>Apply edits to the in-memory save and write to disk, backing up the original first.</summary>
-    public void SaveToPath(string path)
+    public async Task SaveToPathAsync(string path)
     {
         if (_save is null) { Status = "Nothing loaded."; return; }
+        if (IsBusy) return;
+        IsBusy = true;
+        Status = "Saving…";
         try
         {
-            InventoryEditor.SetMoney(_save, Money);
-            foreach (var row in _allItems)
-                InventoryEditor.SetQuantity(_save, row.Hash, row.Quantity);
-
-            if (File.Exists(path))
+            var save = _save;
+            var money = Money;
+            var edits = _allItems.Select(r => (r.Hash, r.Quantity)).ToArray();
+            await Task.Run(() =>
             {
-                var bak = path + ".bak_" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                File.Copy(path, bak, overwrite: false);
-            }
-            _save.Save(path);
+                InventoryEditor.SetMoney(save, money);
+                foreach (var (hash, qty) in edits)
+                    InventoryEditor.SetQuantity(save, hash, qty);
+                if (File.Exists(path))
+                    File.Copy(path, path + ".bak_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"), overwrite: false);
+                save.Save(path);
+            });
             Status = $"Saved to {path} (backup made). Load it in-game to verify.";
         }
         catch (Exception ex)
         {
             Status = $"ERROR saving: {ex.Message}";
         }
+        finally { IsBusy = false; }
     }
 
     public static string DefaultSavesDir =>
