@@ -43,6 +43,19 @@ public static class PlayerDevelopment
         foreach (var chunk in rp.Chunks) yield return chunk.GetType().Name;
     }
 
+    // ---- SaveFile-based API (keeps WolvenKit types out of the GUI) ----
+    public static bool HasData(SaveFile save) => Find(save) is not null;
+    public static IReadOnlyList<AttributeView> ReadAttributes(SaveFile save) =>
+        Find(save) is { } p ? ReadAttributes(p) : Array.Empty<AttributeView>();
+    public static IReadOnlyList<DevPointsView> ReadDevPoints(SaveFile save) =>
+        Find(save) is { } p ? ReadDevPoints(p) : Array.Empty<DevPointsView>();
+    public static IReadOnlyList<ProficiencyView> ReadProficiencies(SaveFile save) =>
+        Find(save) is { } p ? ReadProficiencies(p) : Array.Empty<ProficiencyView>();
+    public static bool SetAttribute(SaveFile save, string name, int value) =>
+        Find(save) is { } p && SetAttribute(p, name, value);
+    public static bool SetUnspentPoints(SaveFile save, string type, int unspent) =>
+        Find(save) is { } p && SetUnspentPoints(p, type, unspent);
+
     public static IReadOnlyList<AttributeView> ReadAttributes(PlayerDevelopmentData pdd)
     {
         var list = new List<AttributeView>();
