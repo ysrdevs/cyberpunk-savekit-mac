@@ -54,11 +54,13 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly List<ItemRow> _allItems = new();
     public ObservableCollection<ItemRow> Items { get; } = new();
 
-    // --- Add-Item picker (stackable items) ---
+    // --- Add-Item picker ---
     [ObservableProperty] private string _catalogSearch = "";
     [ObservableProperty] private CatalogItem? _selectedCatalogItem;
     [ObservableProperty] private uint _addQuantity = 1;
+    [ObservableProperty] private string _selectedCategory = "All";
     public ObservableCollection<CatalogItem> CatalogResults { get; } = new();
+    public IReadOnlyList<string> Categories => AioCatalog.Shared.Categories;
 
     // --- Attributes / Perks tab ---
     [ObservableProperty] private bool _hasPlayerDev;
@@ -67,11 +69,12 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnSearchChanged(string value) => ApplyFilter();
     partial void OnCatalogSearchChanged(string value) => ApplyCatalogFilter();
+    partial void OnSelectedCategoryChanged(string value) => ApplyCatalogFilter();
 
     private void ApplyCatalogFilter()
     {
         CatalogResults.Clear();
-        foreach (var c in AioCatalog.Shared.Search(CatalogSearch, 300))
+        foreach (var c in AioCatalog.Shared.SearchCategory(SelectedCategory, CatalogSearch, 300))
             CatalogResults.Add(c);
     }
 
@@ -86,7 +89,7 @@ public partial class MainWindowViewModel : ObservableObject
         var type = InventoryEditor.AddItem(_save, hash, qty);
         if (type is null) { Status = "Could not add (no inventory loaded)."; return; }
 
-        var label = item.Name ?? item.Id;
+        var label = item.DisplayName;
         var existing = _allItems.FirstOrDefault(r => r.Hash == hash);
         if (existing is not null) existing.Quantity = qty;          // stackable already present
         else _allItems.Add(new ItemRow { Hash = hash, Display = label, Quantity = qty });
