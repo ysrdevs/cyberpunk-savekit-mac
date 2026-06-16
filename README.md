@@ -10,6 +10,21 @@ native Mac build of the game.
 
 > Status: v1. Verified in game on patch 2.3 (game version 2310), Apple Silicon.
 
+## Download and install
+
+Grab the latest `.dmg` from the Releases page, open it, and drag the app to Applications. It is
+signed with a Developer ID and notarized by Apple, so it opens with no Gatekeeper warnings. A `.zip`
+of the app is also provided if you prefer that.
+
+### About the size (around 150 MB)
+
+The app is self contained, which means the entire .NET 8 runtime ships inside it. You install
+nothing else and just double-click. That runtime is most of the size. The rest is the bundled item
+name database (`items.bin`, about 28 MB) and the WolvenKit parser. The trade is deliberate: a
+framework dependent build would be a few MB but would force every player to install the .NET runtime
+first, which defeats the goal of working for non-technical players. For a self contained .NET
+desktop app, this size is normal.
+
 ## What it does
 
 - Edit eddies (money) and any item quantity.
