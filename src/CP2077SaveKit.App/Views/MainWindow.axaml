@@ -122,7 +122,7 @@
                         </ItemsControl>
 
                         <TextBlock Opacity="0.55" TextWrapping="Wrap" Margin="0,6,0,0"
-                                   Text="Attribute caps are 20 in-game (the editor lets you set any value). 'Primary' points are perk points. Edits apply on Save As…"/>
+                                   Text="Attributes cap at 20 in-game (the editor lets you set any value). Relic Points are the Phantom Liberty Relic tree. Edits apply on Save As…"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

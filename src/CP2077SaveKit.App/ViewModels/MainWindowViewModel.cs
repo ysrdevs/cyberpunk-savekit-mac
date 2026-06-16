@@ -21,13 +21,15 @@ public partial class ItemRow : ObservableObject
 
 public partial class AttrRow : ObservableObject
 {
-    public string Name { get; init; } = "";
+    public string RawName { get; init; } = "";   // internal enum name, used when saving
+    public string Name { get; init; } = "";       // player-facing label
     [ObservableProperty] private int _value;
 }
 
 public partial class PointsRow : ObservableObject
 {
-    public string Type { get; init; } = "";
+    public string RawType { get; init; } = "";    // internal enum name, used when saving
+    public string Type { get; init; } = "";        // player-facing label
     public int Spent { get; init; }
     [ObservableProperty] private int _unspent;
 }
@@ -126,10 +128,16 @@ public partial class MainWindowViewModel : ObservableObject
             ApplyCatalogFilter();
 
             Attributes.Clear();
-            foreach (var a in r.attrs) Attributes.Add(new AttrRow { Name = a.Name, Value = a.Value });
+            foreach (var a in r.attrs.Where(a => GameLabels.IsCoreAttribute(a.Name)))
+                Attributes.Add(new AttrRow { RawName = a.Name, Name = GameLabels.AttributeLabel(a.Name), Value = a.Value });
             DevPoints.Clear();
-            foreach (var d in r.pts) DevPoints.Add(new PointsRow { Type = d.Type, Spent = d.Spent, Unspent = d.Unspent });
-            HasPlayerDev = r.attrs.Count > 0;
+            foreach (var d in r.pts)
+            {
+                var label = GameLabels.DevPointLabel(d.Type);
+                if (label is null) continue;   // skip pools players never see
+                DevPoints.Add(new PointsRow { RawType = d.Type, Type = label, Spent = d.Spent, Unspent = d.Unspent });
+            }
+            HasPlayerDev = Attributes.Count > 0;
 
             IsLoaded = true;
             var named = _allItems.Count(i => !i.Display.StartsWith("<unresolved"));
@@ -165,8 +173,8 @@ public partial class MainWindowViewModel : ObservableObject
             var save = _save;
             var money = Money;
             var edits = _allItems.Select(r => (r.Hash, r.Quantity)).ToArray();
-            var attrEdits = Attributes.Select(a => (a.Name, a.Value)).ToArray();
-            var pointEdits = DevPoints.Select(d => (d.Type, d.Unspent)).ToArray();
+            var attrEdits = Attributes.Select(a => (a.RawName, a.Value)).ToArray();
+            var pointEdits = DevPoints.Select(d => (d.RawType, d.Unspent)).ToArray();
             await Task.Run(() =>
             {
                 InventoryEditor.SetMoney(save, money);
