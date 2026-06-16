@@ -105,9 +105,10 @@ try
                 ? Convert.ToUInt64(idArg[2..], 16)
                 : TweakDbNames.TweakHash(idArg);
             var qty = uint.Parse(args[4]);
-            if (!InventoryEditor.AddOrSetStackable(save, hash, qty)) { Console.Error.WriteLine("no inventory"); return 2; }
+            var type = InventoryEditor.AddItem(save, hash, qty);
+            if (type is null) { Console.Error.WriteLine("no inventory"); return 2; }
             save.Save(args[2]);
-            Console.WriteLine($"Added/set {idArg} (0x{hash:X16}) x{qty}. Wrote {args[2]}.");
+            Console.WriteLine($"Added {idArg} (0x{hash:X16}) x{qty} [type={type}]. Wrote {args[2]}.");
             break;
         }
         case "setmoney":
