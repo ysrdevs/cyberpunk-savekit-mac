@@ -16,6 +16,12 @@ Grab the latest `.dmg` from the Releases page, open it, and drag the app to Appl
 signed with a Developer ID and notarized by Apple, so it opens with no Gatekeeper warnings. A `.zip`
 of the app is also provided if you prefer that.
 
+### Updates
+
+On launch the app quietly checks GitHub for a newer release. If one exists, it shows a banner with
+a Download button that opens the new `.dmg`; you then drag it into Applications to replace the old
+version. The check is a single request to the GitHub API and does nothing if you are offline.
+
 ### About the size (around 150 MB)
 
 The app is self contained, which means the entire .NET 8 runtime ships inside it. You install

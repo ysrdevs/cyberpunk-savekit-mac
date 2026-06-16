@@ -56,6 +56,7 @@ PUB="$DIST/publish"
 rm -rf "$PUB" "$APP_DIR"
 dotnet publish "$PROJECT" -c Release -r "$RID" --self-contained true \
   -p:PublishSingleFile=false -p:PublishTrimmed=false -p:DebugType=none -p:DebugSymbols=false \
+  -p:Version="$VERSION" \
   -o "$PUB"
 
 echo "==> Dropping unused non-arm64 native libs (we use managed LZ4 + gzip, not Oodle)…"

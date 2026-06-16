@@ -50,11 +50,34 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private SaveEntry? _selectedSave;
     public ObservableCollection<SaveEntry> SaveList { get; } = new();
 
+    // --- Update check ---
+    [ObservableProperty] private bool _updateAvailable;
+    [ObservableProperty] private string _updateText = "";
+    private string? _updateUrl;
+
     public MainWindowViewModel()
     {
         // Warm the name dictionaries off the UI thread so the first save load is fast.
         Task.Run(() => { _ = AioCatalog.Shared; _ = TweakDbNames.Shared; });
         RefreshSaves();
+        if (!Avalonia.Controls.Design.IsDesignMode) _ = CheckForUpdatesAsync();
+    }
+
+    private async Task CheckForUpdatesAsync()
+    {
+        var current = typeof(MainWindowViewModel).Assembly.GetName().Version ?? new Version(1, 0, 0, 0);
+        var info = await UpdateChecker.CheckAsync(current);
+        if (info is null) return;
+        _updateUrl = info.DownloadUrl;
+        UpdateText = $"Update available: {info.LatestTag}. Click Download to get the new version, then drag it into Applications.";
+        UpdateAvailable = true;
+    }
+
+    [RelayCommand]
+    private void OpenUpdate()
+    {
+        if (string.IsNullOrEmpty(_updateUrl)) return;
+        try { System.Diagnostics.Process.Start("open", _updateUrl); } catch { /* ignore */ }
     }
 
     [RelayCommand]
