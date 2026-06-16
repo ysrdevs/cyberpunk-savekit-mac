@@ -30,7 +30,7 @@ public static class InventoryReader
             {
                 var tdbid = item.ItemInfo.ItemId.Id;
                 ulong hash = tdbid;                       // TweakDBID -> ulong (implicit)
-                string? name = tdbid.GetResolvedText();   // null if pool not loaded
+                string? name = TweakDbNames.Shared.Resolve(hash);
                 items.Add(new InventoryItem(hash, name, item.Quantity, (byte)item.Flags));
             }
             result.Add(new SubInventoryView(sub.InventoryId, items));
