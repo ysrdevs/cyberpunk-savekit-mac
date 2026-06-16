@@ -49,11 +49,9 @@ version-locked; a mismatch can brick a save.**
        real **patch 2.3 (v2310)** save: 86 top-level nodes parsed; `inventory` + 1636 `itemData`,
        `StatsSystem`, `StatPoolsSystem`, `ScriptableSystemsContainer`, `FactsDB` all present.
 3. [ ] Parse inventory into readable item list (TweakDBID + qty) via `items.bin`.
-4. [~] Write-back: re-serialize. Untouched round-trip preserves ALL 86 nodes + counts (verified
-       by node-inventory diff); output ~260 KB smaller = WolvenKit LZ4 level differs from CDPR's,
-       NOT data loss. PENDING in-game acceptance test: load slot `ManualSave-90` (additive test
-       slot holding the untouched round-tripped save; real saves untouched, orig backed up in
-       `fixtures/test.sav.dat`). If it loads clean → write-back is sound, proceed to edits.
+4. [x] Write-back VERIFIED 2026-06-16: round-tripped slot `ManualSave-90` loaded clean in-game
+       (walked around, inventory intact). Untouched round-trip preserves ALL 86 nodes + counts;
+       ~260 KB smaller = WolvenKit LZ4 level differs from CDPR's, NOT data loss. WRITE-BACK IS SOUND.
 5. [ ] GUI: tabs for Inventory / Attributes / Perks / Appearance / Facts.
 6. [ ] Polish: backups, validation, version detection.
 
