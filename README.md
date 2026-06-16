@@ -92,8 +92,8 @@ docs/ARCHITECTURE.md   design notes and findings
 - `items.bin`: a gzip stream of about 1.96 million TweakDB names (from CyberCAT-SimpleGUI). Used to
   resolve item id hashes to code names.
 - `aio_catalog.json`: 7,552 spawnable items with friendly names, categories, and tiers, extracted
-  from the community "Categorized AIO Command List". Used for the add-item picker and game style
-  display names.
+  from the [Categorized AIO Command List](https://www.nexusmods.com/cyberpunk2077/mods/521) by
+  Silverhandsome. Used for the add-item picker and game style display names.
 - `ItemClasses.json`: per item structure metadata (type, single instance, mod slot parts, from
   CyberCAT-SimpleGUI). Used to construct weapons, clothing, and cyberware with the correct extended
   structure and default mod slots.
@@ -225,7 +225,9 @@ Every risky write was confirmed by loading the result in the actual game on patc
 - [WolvenKit](https://github.com/WolvenKit/WolvenKit) for the save parser and RED type system.
 - [CyberCAT-SimpleGUI](https://www.nexusmods.com/cyberpunk2077/mods/718) for `items.bin` and
   `ItemClasses.json`.
-- The community "Categorized AIO Command List" for the item catalog.
+- The [Categorized AIO Command List](https://www.nexusmods.com/cyberpunk2077/mods/521) by
+  **Silverhandsome** for the item catalog. The breadth and quality of that list is what makes the
+  add-item picker possible. Great work.
 
 ## License
 
