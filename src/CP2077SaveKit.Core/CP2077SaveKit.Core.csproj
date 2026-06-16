@@ -9,6 +9,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>Resources\items.bin</Link>
     </Content>
+    <Content Include="Resources\aio_catalog.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Resources\aio_catalog.json</Link>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup>
