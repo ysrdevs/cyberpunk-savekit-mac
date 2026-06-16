@@ -67,13 +67,13 @@
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,8">
                         <TextBlock Text="Search:" VerticalAlignment="Center"/>
                         <TextBox Text="{Binding CatalogSearch}" Width="320"
-                                 Watermark="ammo, grenade, component, …"/>
+                                 Watermark="malorian, katana, sandevistan, ammo, …"/>
                         <TextBlock Text="Qty:" VerticalAlignment="Center" Margin="16,0,0,0"/>
                         <TextBox Text="{Binding AddQuantity}" Width="100"/>
                         <Button Content="Add Selected" Command="{Binding AddSelectedItemCommand}"/>
                     </StackPanel>
                     <TextBlock DockPanel.Dock="Bottom" Margin="2,6,0,0" Opacity="0.55" TextWrapping="Wrap"
-                               Text="v1 supports stackable items (Misc/Crafting: money, ammo, components, consumables, grenades). Weapons/cyberware/clothing coming next."/>
+                               Text="All 7,552 items: weapons, cyberware, clothing, mods, components, consumables, grenades. Gear is added at base stats (the game finalizes stats/mods on load). Qty applies to stackables. Edits apply on Save As…"/>
                     <Border BorderBrush="#33FFFFFF" BorderThickness="1" CornerRadius="4">
                         <ListBox ItemsSource="{Binding CatalogResults}"
                                  SelectedItem="{Binding SelectedCatalogItem}">
