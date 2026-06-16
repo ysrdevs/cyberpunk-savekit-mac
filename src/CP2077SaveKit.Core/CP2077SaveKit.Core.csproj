@@ -13,6 +13,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>Resources\aio_catalog.json</Link>
     </Content>
+    <Content Include="Resources\ItemClasses.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Resources\ItemClasses.json</Link>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup>
