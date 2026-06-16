@@ -65,11 +65,13 @@
             <TabItem Header="Add Item">
                 <DockPanel IsEnabled="{Binding IsLoaded}">
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,8">
-                        <TextBlock Text="Search:" VerticalAlignment="Center"/>
-                        <TextBox Text="{Binding CatalogSearch}" Width="320"
-                                 Watermark="malorian, katana, sandevistan, ammo, …"/>
-                        <TextBlock Text="Qty:" VerticalAlignment="Center" Margin="16,0,0,0"/>
-                        <TextBox Text="{Binding AddQuantity}" Width="100"/>
+                        <TextBlock Text="Category:" VerticalAlignment="Center"/>
+                        <ComboBox ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" Width="140"/>
+                        <TextBlock Text="Search:" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                        <TextBox Text="{Binding CatalogSearch}" Width="240"
+                                 Watermark="malorian, katana, sandevistan…"/>
+                        <TextBlock Text="Qty:" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                        <TextBox Text="{Binding AddQuantity}" Width="80"/>
                         <Button Content="Add Selected" Command="{Binding AddSelectedItemCommand}"/>
                     </StackPanel>
                     <TextBlock DockPanel.Dock="Bottom" Margin="2,6,0,0" Opacity="0.55" TextWrapping="Wrap"

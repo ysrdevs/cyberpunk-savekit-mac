@@ -11,10 +11,13 @@ public sealed class CatalogItem
     [JsonPropertyName("tier")]  public string? Tier { get; set; }
     [JsonPropertyName("sheet")] public string? Sheet { get; set; }
 
-    /// <summary>Best label for a picker: friendly name + type, falling back to the id.</summary>
+    /// <summary>Game-style (title-cased) name, falling back to the code id.</summary>
+    public string DisplayName => Name is { Length: > 0 } ? Naming.Pretty(Name) : Id;
+
+    /// <summary>Best label for a picker: pretty name + type, falling back to the id.</summary>
     public string Label =>
-        (Name is { Length: > 0 } ? Name : Id) +
-        (Type is { Length: > 0 } ? $"  ·  {Type}" : "") +
+        DisplayName +
+        (Type is { Length: > 0 } ? $"  ·  {Naming.Pretty(Type)}" : "") +
         (Tier is { Length: > 0 } and not "-" ? $"  ·  {Tier}" : "");
 }
 
@@ -46,7 +49,7 @@ public sealed class AioCatalog
             _idByHash.TryAdd(h, it.Id);
             if (string.IsNullOrEmpty(it.Name)) continue;
             if (it.Sheet is null || !NameSheets.Contains(it.Sheet)) continue;
-            _friendlyByHash.TryAdd(h, it.Name);
+            _friendlyByHash.TryAdd(h, Naming.Pretty(it.Name));
         }
     }
 
@@ -57,6 +60,29 @@ public sealed class AioCatalog
     public string? CodeId(ulong hash) => _idByHash.TryGetValue(hash, out var n) ? n : null;
 
     public IEnumerable<CatalogItem> Search(string term, int limit = 300) => Search(Items, term, limit);
+
+    /// <summary>High-level category names (sheets) for the picker dropdown, "All" first.</summary>
+    public IReadOnlyList<string> Categories
+    {
+        get
+        {
+            var order = new[] { "WEAPONS", "CYBERWARE", "CLOTHES", "MODS", "CRAFTING", "MISC" };
+            var present = Items.Select(i => i.Sheet).Where(s => s is not null).Distinct().ToHashSet()!;
+            var list = new List<string> { "All" };
+            list.AddRange(order.Where(present.Contains));
+            list.AddRange(present.Where(s => !order.Contains(s)).OrderBy(s => s)!);
+            return list;
+        }
+    }
+
+    /// <summary>Search within a category ("All" = no category filter).</summary>
+    public IEnumerable<CatalogItem> SearchCategory(string? category, string term, int limit = 300)
+    {
+        IEnumerable<CatalogItem> src = (category is null or "All")
+            ? Items
+            : Items.Where(i => string.Equals(i.Sheet, category, StringComparison.OrdinalIgnoreCase));
+        return Search(src, term, limit);
+    }
 
     // Sheets whose items are stackable (quantity-structured) and therefore safe to construct with
     // the current Add-Item path. Weapons/Cyberware/Clothes/Mods need extended structure (mod slots).
