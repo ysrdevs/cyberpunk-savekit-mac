@@ -50,6 +50,28 @@ try
             }
             break;
         }
+        case "qty":
+        {
+            var save = SaveFile.Load(path);
+            var idArg = args[2];
+            ulong hash = idArg.StartsWith("0x") ? Convert.ToUInt64(idArg[2..], 16) : TweakDbNames.TweakHash(idArg);
+            Console.WriteLine($"{idArg} (0x{hash:X16}) qty = {InventoryEditor.GetQuantity(save, hash)}");
+            break;
+        }
+        case "additem":
+        {
+            if (args.Length < 5) { Console.Error.WriteLine("additem <save> <out.dat> <Items.Name|0xhash> <qty>"); return 1; }
+            var save = SaveFile.Load(path);
+            var idArg = args[3];
+            ulong hash = idArg.StartsWith("0x")
+                ? Convert.ToUInt64(idArg[2..], 16)
+                : TweakDbNames.TweakHash(idArg);
+            var qty = uint.Parse(args[4]);
+            if (!InventoryEditor.AddOrSetStackable(save, hash, qty)) { Console.Error.WriteLine("no inventory"); return 2; }
+            save.Save(args[2]);
+            Console.WriteLine($"Added/set {idArg} (0x{hash:X16}) x{qty}. Wrote {args[2]}.");
+            break;
+        }
         case "setmoney":
         {
             if (args.Length < 4) { Console.Error.WriteLine("setmoney <save> <out.dat> <amount>"); return 1; }
