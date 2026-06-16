@@ -36,6 +36,23 @@ public static class SaveBrowser
         return list;
     }
 
+    /// <summary>Path for a brand-new ManualSave folder (next unused number) in the default saves dir.</summary>
+    public static string NextManualSlotPath()
+    {
+        var dir = DefaultSavesDir;
+        Directory.CreateDirectory(dir);
+        int max = 0;
+        const string prefix = "ManualSave-";
+        foreach (var sub in Directory.GetDirectories(dir))
+        {
+            var name = Path.GetFileName(sub);
+            if (name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+                && int.TryParse(name[prefix.Length..], out var n))
+                max = Math.Max(max, n);
+        }
+        return Path.Combine(dir, $"{prefix}{max + 1}");
+    }
+
     private static string Classify(string folder)
     {
         bool starts(string p) => folder.StartsWith(p, StringComparison.OrdinalIgnoreCase);

@@ -19,6 +19,7 @@
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8">
             <Button Name="OpenBtn" Content="Open Save…"/>
             <Button Name="SaveAsBtn" Content="Save As…" IsEnabled="{Binding IsLoaded}"/>
+            <Button Content="Save to New Slot" Command="{Binding SaveToNewSlotCommand}" IsEnabled="{Binding IsLoaded}"/>
             <Button Content="Check for Updates" Command="{Binding CheckForUpdatesCommand}"/>
             <TextBlock Text="{Binding LoadedPath}" VerticalAlignment="Center" Opacity="0.7"
                        TextTrimming="CharacterEllipsis" MaxWidth="480"/>

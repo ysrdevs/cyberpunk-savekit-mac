@@ -264,6 +264,59 @@ public partial class MainWindowViewModel : ObservableObject
         finally { IsBusy = false; }
     }
 
+    /// <summary>Write current edits as a brand-new Manual save in the game's saves folder, so it
+    /// appears in the in-game load menu. No file dialog needed.</summary>
+    [RelayCommand]
+    private async Task SaveToNewSlotAsync()
+    {
+        if (_save is null) { Status = "Open a save first."; return; }
+        if (IsBusy) return;
+        if (string.IsNullOrEmpty(LoadedPath)) { Status = "No source save loaded."; return; }
+
+        IsBusy = true;
+        Status = "Creating a new save slot...";
+        try
+        {
+            var save = _save;
+            var srcFolder = Path.GetDirectoryName(LoadedPath)!;
+            var money = Money;
+            var itemEdits = _allItems.Select(r => (r.Hash, r.Quantity)).ToArray();
+            var attrEdits = Attributes.Select(a => (a.RawName, a.Value)).ToArray();
+            var pointEdits = DevPoints.Select(d => (d.RawType, d.Unspent)).ToArray();
+
+            var (folder, hadMeta) = await Task.Run(() =>
+            {
+                InventoryEditor.SetMoney(save, money);
+                foreach (var (hash, qty) in itemEdits) InventoryEditor.SetQuantity(save, hash, qty);
+                foreach (var (name, val) in attrEdits) PlayerDevelopment.SetAttribute(save, name, val);
+                foreach (var (type, un) in pointEdits) PlayerDevelopment.SetUnspentPoints(save, type, un);
+
+                var dst = SaveBrowser.NextManualSlotPath();
+                Directory.CreateDirectory(dst);
+                var meta = false;
+                foreach (var f in new[] { "metadata.9.json", "screenshot.png" })
+                {
+                    var srcF = Path.Combine(srcFolder, f);
+                    if (File.Exists(srcF)) { File.Copy(srcF, Path.Combine(dst, f), overwrite: true); if (f.StartsWith("metadata")) meta = true; }
+                }
+                save.Save(Path.Combine(dst, "sav.dat"));
+                var now = DateTime.Now;
+                foreach (var f in Directory.GetFiles(dst)) File.SetLastWriteTime(f, now);
+                return (dst, meta);
+            });
+
+            Status = hadMeta
+                ? $"Created {Path.GetFileName(folder)} in your saves. Load it in-game (it is the newest save)."
+                : $"Created {Path.GetFileName(folder)}, but no metadata was found to copy, so the game may not list it. Load a save from the dropdown for best results.";
+            RefreshSaves();
+        }
+        catch (Exception ex)
+        {
+            Status = $"ERROR creating slot: {ex.Message}";
+        }
+        finally { IsBusy = false; }
+    }
+
     public static string DefaultSavesDir =>
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
             "Library", "Application Support", "CD Projekt Red", "Cyberpunk 2077", "saves");
