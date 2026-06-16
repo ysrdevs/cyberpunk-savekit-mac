@@ -3,18 +3,54 @@
         xmlns:vm="using:CP2077SaveKit.App.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
         x:Class="CP2077SaveKit.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="CP2077SaveKit.App">
+        Width="900" Height="640"
+        Title="CP2077 Save Kit">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <DockPanel Margin="12">
+        <!-- Toolbar -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8">
+            <Button Name="OpenBtn" Content="Open Save…"/>
+            <Button Name="SaveAsBtn" Content="Save As…" IsEnabled="{Binding IsLoaded}"/>
+            <TextBlock Text="{Binding LoadedPath}" VerticalAlignment="Center" Opacity="0.7"
+                       TextTrimming="CharacterEllipsis" MaxWidth="560"/>
+        </StackPanel>
 
+        <!-- Money + search -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,12,0,8"
+                    IsEnabled="{Binding IsLoaded}">
+            <TextBlock Text="Eddies:" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Money}" Width="160"/>
+            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="16,0,0,0"/>
+            <TextBox Text="{Binding Search}" Width="280" Watermark="filter items by name or hash"/>
+        </StackPanel>
+
+        <!-- Status bar -->
+        <Border DockPanel.Dock="Bottom" Background="#22000000" Padding="8,6" Margin="0,8,0,0" CornerRadius="4">
+            <TextBlock Text="{Binding Status}" TextWrapping="Wrap"/>
+        </Border>
+
+        <!-- Inventory list -->
+        <Border BorderBrush="#33FFFFFF" BorderThickness="1" CornerRadius="4">
+            <ListBox ItemsSource="{Binding Items}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ItemRow">
+                        <Grid ColumnDefinitions="*,120,Auto">
+                            <TextBlock Grid.Column="0" Text="{Binding Display}" VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <TextBox  Grid.Column="1" Text="{Binding Quantity}" Margin="8,2"/>
+                            <TextBlock Grid.Column="2" Text="{Binding HashHex}" VerticalAlignment="Center"
+                                       Opacity="0.45" FontFamily="monospace" Margin="8,0,4,0"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+    </DockPanel>
 </Window>
