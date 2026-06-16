@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(uv --version)",
-      "Bash(uv python *)",
-      "Bash(mdfind -name \"Cyberpunk\")"
-    ]
-  }
-}
