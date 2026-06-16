@@ -14,4 +14,3 @@ fixtures/*.sav
 
 # packaged output
 dist/
-build/AppIcon.icns
