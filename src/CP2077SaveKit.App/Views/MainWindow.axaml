@@ -23,6 +23,13 @@
                        TextTrimming="CharacterEllipsis" MaxWidth="600"/>
         </StackPanel>
 
+        <!-- Safety tip -->
+        <Border DockPanel.Dock="Top" Margin="0,10,0,0" Padding="10,7" CornerRadius="4"
+                Background="#1AF5E003" BorderBrush="#66F5E003" BorderThickness="1">
+            <TextBlock TextWrapping="Wrap"
+                       Text="Tip: for the safest experience, edit a Manual Save. Make a manual save in the game first, edit that one here, and keep a backup. Auto-saves and quick-saves can be overwritten by the game at any time."/>
+        </Border>
+
         <!-- Status bar -->
         <Border DockPanel.Dock="Bottom" Background="#22000000" Padding="8,6" Margin="0,8,0,0" CornerRadius="4">
             <StackPanel Orientation="Horizontal" Spacing="10">

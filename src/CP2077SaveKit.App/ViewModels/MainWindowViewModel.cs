@@ -142,7 +142,10 @@ public partial class MainWindowViewModel : ObservableObject
 
             IsLoaded = true;
             var named = _allItems.Count(i => !i.Display.StartsWith("<unresolved"));
-            Status = $"Loaded {Path.GetFileName(Path.GetDirectoryName(path))} — v{r.save.GameVersion}, {_allItems.Count} items ({named} named).";
+            var folder = Path.GetFileName(Path.GetDirectoryName(path)) ?? "save";
+            Status = $"Loaded {folder} (v{r.save.GameVersion}), {_allItems.Count} items, {named} named.";
+            if (!folder.StartsWith("ManualSave", StringComparison.OrdinalIgnoreCase))
+                Status += "  This is not a Manual Save. For safety, edit a Manual Save instead.";
         }
         catch (Exception ex)
         {
