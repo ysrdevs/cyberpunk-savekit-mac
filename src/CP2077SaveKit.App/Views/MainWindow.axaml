@@ -23,6 +23,21 @@
                        TextTrimming="CharacterEllipsis" MaxWidth="600"/>
         </StackPanel>
 
+        <!-- Save picker (from the default Cyberpunk saves folder) -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,10,0,0">
+            <TextBlock Text="Your saves:" VerticalAlignment="Center"/>
+            <ComboBox Width="430" ItemsSource="{Binding SaveList}" SelectedItem="{Binding SelectedSave}"
+                      PlaceholderText="pick a save to load">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="core:SaveEntry">
+                        <TextBlock Text="{Binding Display}" FontFamily="monospace"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <CheckBox Content="Manual saves only" IsChecked="{Binding ManualOnly}" VerticalAlignment="Center"/>
+            <Button Content="Refresh" Command="{Binding RefreshSavesCommand}"/>
+        </StackPanel>
+
         <!-- Safety tip -->
         <Border DockPanel.Dock="Top" Margin="0,10,0,0" Padding="10,7" CornerRadius="4"
                 Background="#1AF5E003" BorderBrush="#66F5E003" BorderThickness="1">

@@ -45,10 +45,33 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private bool _isLoaded;
     [ObservableProperty] private bool _isBusy;
 
+    // --- Save browser (default folder) ---
+    [ObservableProperty] private bool _manualOnly = true;
+    [ObservableProperty] private SaveEntry? _selectedSave;
+    public ObservableCollection<SaveEntry> SaveList { get; } = new();
+
     public MainWindowViewModel()
     {
         // Warm the name dictionaries off the UI thread so the first save load is fast.
         Task.Run(() => { _ = AioCatalog.Shared; _ = TweakDbNames.Shared; });
+        RefreshSaves();
+    }
+
+    [RelayCommand]
+    public void RefreshSaves()
+    {
+        SaveList.Clear();
+        foreach (var e in SaveBrowser.List(ManualOnly)) SaveList.Add(e);
+        if (SaveList.Count == 0 && string.IsNullOrEmpty(LoadedPath))
+            Status = ManualOnly
+                ? "No Manual saves found in the default folder. Make a manual save in-game, or untick 'Manual saves only', or use Open Save."
+                : "No saves found in the default folder. Use Open Save to pick one manually.";
+    }
+
+    partial void OnManualOnlyChanged(bool value) => RefreshSaves();
+    partial void OnSelectedSaveChanged(SaveEntry? value)
+    {
+        if (value is not null) _ = LoadFromPathAsync(value.Path);
     }
 
     private readonly List<ItemRow> _allItems = new();

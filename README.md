@@ -138,9 +138,10 @@ export PATH="$HOME/.dotnet:$PATH"
 dotnet run --project src/CP2077SaveKit.App -c Release
 ```
 
-1. Open Save. The picker starts in the Cyberpunk saves folder
-   (`~/Library/Application Support/CD Projekt Red/Cyberpunk 2077/saves`).
-   Choose a save folder's `sav.dat`.
+1. Pick a save from the "Your saves" dropdown, which lists your saves automatically from the default
+   Cyberpunk folder (defaults to Manual saves; untick "Manual saves only" to see auto/quick saves).
+   You do not need to know where saves live. Use the Open Save button only for a save in a custom
+   location.
 2. Inventory tab: edit eddies and item quantities, filter by name or hash.
 3. Add Item tab: choose a category, search, set a quantity, Add Selected.
 4. Attributes and Perks tab: edit attributes and point pools.
