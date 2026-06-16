@@ -231,4 +231,3 @@ Every risky write was confirmed by loading the result in the actual game on patc
 
 This is a personal project. The bundled data files and the WolvenKit dependency are the property of
 their respective authors and are subject to their own licenses. Not affiliated with CD PROJEKT RED.
-```
