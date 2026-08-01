@@ -10,29 +10,37 @@ public static class InventoryEditor
 {
     public const ulong MoneyHash = 0x0000000bf5e188ec; // Items.money
 
-    /// <summary>Set the quantity of the first item matching idHash. Returns true if found.</summary>
+    /// <summary>Set the quantity of every item matching idHash. Returns true if any was found.
+    /// A save can hold the same item in several sub-inventories (money in particular appears in
+    /// up to three), and the entry the game treats as the player's is not always the first one,
+    /// so all of them are updated.</summary>
     public static bool SetQuantity(SaveFile save, ulong idHash, uint quantity)
     {
+        var found = false;
         foreach (var item in EnumerateItems(save))
         {
             if ((ulong)item.ItemInfo.ItemId.Id == idHash)
             {
                 item.Quantity = quantity;
-                return true;
+                found = true;
             }
         }
-        return false;
+        return found;
     }
 
     public static bool SetMoney(SaveFile save, uint amount) => SetQuantity(save, MoneyHash, amount);
 
-    /// <summary>Read current quantity for an item hash (0 if absent).</summary>
+    /// <summary>Read current quantity for an item hash (0 if absent). When the item exists in
+    /// several sub-inventories, returns the largest quantity: the player-facing entry (e.g. the
+    /// money wallet) is not always first, and stale duplicates observed in real saves carry a
+    /// smaller placeholder amount.</summary>
     public static uint GetQuantity(SaveFile save, ulong idHash)
     {
+        uint max = 0;
         foreach (var item in EnumerateItems(save))
-            if ((ulong)item.ItemInfo.ItemId.Id == idHash)
-                return item.Quantity;
-        return 0;
+            if ((ulong)item.ItemInfo.ItemId.Id == idHash && item.Quantity > max)
+                max = item.Quantity;
+        return max;
     }
 
     /// <summary>
