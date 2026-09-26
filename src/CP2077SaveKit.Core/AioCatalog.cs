@@ -31,6 +31,7 @@ public sealed class AioCatalog
     public IReadOnlyList<CatalogItem> Items { get; }
     private readonly Dictionary<ulong, string> _friendlyByHash;
     private readonly Dictionary<ulong, string> _idByHash;
+    private readonly Dictionary<ulong, string> _sheetByHash;
 
     // Sheets whose NAME column holds a real item name. MISC/CRAFTING use the NAME column for
     // command *descriptions* ("+ 500,000 €$"), so we exclude them from name resolution (but keep
@@ -43,10 +44,12 @@ public sealed class AioCatalog
         Items = items;
         _friendlyByHash = new Dictionary<ulong, string>(items.Count);
         _idByHash = new Dictionary<ulong, string>(items.Count);
+        _sheetByHash = new Dictionary<ulong, string>(items.Count);
         foreach (var it in items)
         {
             var h = TweakDbNames.TweakHash(it.Id);
             _idByHash.TryAdd(h, it.Id);
+            if (it.Sheet is not null) _sheetByHash.TryAdd(h, it.Sheet);
             if (string.IsNullOrEmpty(it.Name)) continue;
             if (it.Sheet is null || !NameSheets.Contains(it.Sheet)) continue;
             _friendlyByHash.TryAdd(h, Naming.Pretty(it.Name));
@@ -60,6 +63,24 @@ public sealed class AioCatalog
     public string? CodeId(ulong hash) => _idByHash.TryGetValue(hash, out var n) ? n : null;
 
     public IEnumerable<CatalogItem> Search(string term, int limit = 300) => Search(Items, term, limit);
+
+    public const string OtherCategory = "OTHER";
+
+    /// <summary>Category (same names as the picker dropdown) for an item hash: the catalog sheet,
+    /// else mapped from its ItemClasses type (covers stock gear and recipes the catalog omits),
+    /// else OTHER.</summary>
+    public string CategoryOf(ulong hash)
+    {
+        if (_sheetByHash.TryGetValue(hash, out var sheet)) return sheet;
+        return ItemClasses.Shared.Get(hash)?.Type switch
+        {
+            "Weapon" or "Grenade" => "WEAPONS",
+            "Cyberware" => "CYBERWARE",
+            "Clothing" => "CLOTHES",
+            "ItemRecipe" => "CRAFTING",
+            _ => OtherCategory,
+        };
+    }
 
     /// <summary>High-level category names (sheets) for the picker dropdown, "All" first.</summary>
     public IReadOnlyList<string> Categories

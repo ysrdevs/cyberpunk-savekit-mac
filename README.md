@@ -24,7 +24,7 @@ version. The check is a single request to the GitHub API and does nothing if you
 
 ### About the size (around 150 MB)
 
-The app is self contained, which means the entire .NET 8 runtime ships inside it. You install
+The app is self contained, which means the entire .NET 10 runtime ships inside it. You install
 nothing else and just double-click. That runtime is most of the size. The rest is the bundled item
 name database (`items.bin`, about 28 MB) and the WolvenKit parser. The trade is deliberate: a
 framework dependent build would be a few MB but would force every player to install the .NET runtime
@@ -66,9 +66,9 @@ type schema and rebuilding it on every patch.
 
 So the core decision was to reuse the parser instead of rewriting it:
 
-- **.NET 8.** [WolvenKit](https://github.com/WolvenKit/WolvenKit), the most complete and actively
+- **.NET 10.** [WolvenKit](https://github.com/WolvenKit/WolvenKit), the most complete and actively
   maintained CP2077 toolkit, already contains a correct save reader and writer
-  (`WolvenKit.RED4.Save`). It targets `net8.0`, which is cross platform and runs natively on Apple
+  (`WolvenKit.RED4.Save`). It targets `net10.0`, which is cross platform and runs natively on Apple
   Silicon. Reusing it means the parsing correctness, including checksum and size recomputation on
   write, is solved and stays current with the project.
 
@@ -118,7 +118,7 @@ procedurally generated item ids that have no static name anywhere.
 ## Requirements
 
 - macOS on Apple Silicon (built and verified on arm64).
-- .NET 8 SDK.
+- .NET 10 SDK.
 - A local clone of WolvenKit (the build references it by relative path, see below).
 
 ## Build
@@ -130,10 +130,10 @@ The Core project references `WolvenKit.RED4` by relative path, so WolvenKit must
 # 1. clone this repo, then fetch the parser dependency.
 #    WolvenKit's main branch moves, so check out the commit this was built and verified against.
 git clone https://github.com/WolvenKit/WolvenKit.git _refs/WolvenKit
-git -C _refs/WolvenKit checkout a5d01243d61d4b3985a208b66708662d8ecde8a1
+git -C _refs/WolvenKit checkout b900c6bb645d0a60c0e5ad791fc87166465f8aca
 
-# 2. install .NET 8 if needed (official script, no sudo, installs to ~/.dotnet)
-curl -fsSL https://dot.net/v1/dotnet-install.sh | bash -s -- --channel 8.0 --install-dir "$HOME/.dotnet"
+# 2. install .NET 10 if needed (official script, no sudo, installs to ~/.dotnet)
+curl -fsSL https://dot.net/v1/dotnet-install.sh | bash -s -- --channel 10.0 --install-dir "$HOME/.dotnet"
 export PATH="$HOME/.dotnet:$PATH"
 
 # 3. build

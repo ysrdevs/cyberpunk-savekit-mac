@@ -10,11 +10,16 @@ using CP2077SaveKit.Core;
 
 namespace CP2077SaveKit.App.ViewModels;
 
-/// <summary>One editable inventory row. Editing Quantity flags the VM dirty.</summary>
+/// <summary>One editable inventory row. A row counts as edited when Quantity differs from
+/// OriginalQuantity; only edited rows are written back, to their own entry.</summary>
 public partial class ItemRow : ObservableObject
 {
     public ulong Hash { get; init; }
     public string Display { get; init; } = "";
+    public string Category { get; init; } = "";  // same names as the Add Item category dropdown
+    public ulong SubInventoryId { get; init; }   // with Index, locates this exact entry in the save
+    public int Index { get; init; }
+    public uint OriginalQuantity { get; init; }  // quantity in the in-memory save when the row was built
     [ObservableProperty] private uint _quantity;
     public string HashHex => $"0x{Hash:X16}";
 }
@@ -37,6 +42,7 @@ public partial class PointsRow : ObservableObject
 public partial class MainWindowViewModel : ObservableObject
 {
     private SaveFile? _save;
+    private uint _savedMoney;   // eddies in the in-memory save; Money differing from it is an edit
 
     [ObservableProperty] private string _status = "Open a save to begin.";
     [ObservableProperty] private string? _loadedPath;
@@ -117,6 +123,11 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly List<ItemRow> _allItems = new();
     public ObservableCollection<ItemRow> Items { get; } = new();
 
+    // Inventory category filter: "All" plus the categories present in the loaded save.
+    [ObservableProperty] private string _inventoryCategory = "All";
+    public ObservableCollection<string> InventoryCategories { get; } = new() { "All" };
+    partial void OnInventoryCategoryChanged(string value) => ApplyFilter();
+
     // --- Add-Item picker ---
     [ObservableProperty] private string _catalogSearch = "";
     [ObservableProperty] private CatalogItem? _selectedCatalogItem;
@@ -149,15 +160,49 @@ public partial class MainWindowViewModel : ObservableObject
         var item = SelectedCatalogItem;
         var hash = TweakDbNames.TweakHash(item.Id);
         var qty = AddQuantity == 0 ? 1u : AddQuantity;
+        ApplyPendingEdits(_save);   // keep unsaved edits: rows are rebuilt below
         var type = InventoryEditor.AddItem(_save, hash, qty);
         if (type is null) { Status = "Could not add (no inventory loaded)."; return; }
 
-        var label = item.DisplayName;
-        var existing = _allItems.FirstOrDefault(r => r.Hash == hash);
-        if (existing is not null) existing.Quantity = qty;          // stackable already present
-        else _allItems.Add(new ItemRow { Hash = hash, Display = label, Quantity = qty });
+        ReloadRows(_save);
+        Status = $"Added {item.DisplayName} ×{qty} [{type}] (unsaved — Save As… then load in-game).";
+    }
+
+    private static List<ItemRow> BuildRows(SaveFile save)
+    {
+        var list = new List<ItemRow>();
+        foreach (var sub in InventoryReader.Read(save))
+            foreach (var it in sub.Items)
+                list.Add(new ItemRow
+                {
+                    Hash = it.IdHash, Display = it.Display, Category = AioCatalog.Shared.CategoryOf(it.IdHash),
+                    SubInventoryId = it.SubInventoryId, Index = it.Index,
+                    OriginalQuantity = it.Quantity, Quantity = it.Quantity,
+                });
+        return list;
+    }
+
+    /// <summary>Rebuild the inventory rows and eddies field from the in-memory save.</summary>
+    private void ReloadRows(SaveFile save)
+    {
+        _allItems.Clear();
+        _allItems.AddRange(BuildRows(save));
+        _savedMoney = Money = InventoryEditor.GetQuantity(save, InventoryEditor.MoneyHash);
+        RefreshInventoryCategories();
         ApplyFilter();
-        Status = $"Added {label} ×{qty} [{type}] (unsaved — Save As… then load in-game).";
+    }
+
+    /// <summary>Write the edits made in the UI into the in-memory save, then rebuild the rows.
+    /// Only changed values are written: a changed eddies field sets every money entry, and each
+    /// changed row sets its own entry. Writing unchanged rows back would undo the eddies edit
+    /// (money rows still hold the old amount) and, for items present in several sub-inventories,
+    /// would let one row overwrite another.</summary>
+    private void ApplyPendingEdits(SaveFile save)
+    {
+        if (Money != _savedMoney) InventoryEditor.SetMoney(save, Money);
+        foreach (var r in _allItems.Where(r => r.Quantity != r.OriginalQuantity))
+            InventoryEditor.SetQuantityAt(save, r.SubInventoryId, r.Index, r.Hash, r.Quantity);
+        ReloadRows(save);
     }
 
     public async Task LoadFromPathAsync(string path)
@@ -172,10 +217,7 @@ public partial class MainWindowViewModel : ObservableObject
             var r = await Task.Run(() =>
             {
                 var s = SaveFile.Load(path);
-                var list = new List<ItemRow>();
-                foreach (var sub in InventoryReader.Read(s))
-                    foreach (var it in sub.Items)
-                        list.Add(new ItemRow { Hash = it.IdHash, Display = it.Display, Quantity = it.Quantity });
+                var list = BuildRows(s);
                 var m = InventoryEditor.GetQuantity(s, InventoryEditor.MoneyHash);
                 var attrs = PlayerDevelopment.ReadAttributes(s);
                 var pts = PlayerDevelopment.ReadDevPoints(s);
@@ -187,7 +229,8 @@ public partial class MainWindowViewModel : ObservableObject
             LoadedPath = path;
             _allItems.Clear();
             _allItems.AddRange(r.rows);
-            Money = r.money;
+            _savedMoney = Money = r.money;
+            RefreshInventoryCategories();
             ApplyFilter();
             ApplyCatalogFilter();
 
@@ -218,10 +261,26 @@ public partial class MainWindowViewModel : ObservableObject
         finally { IsBusy = false; }
     }
 
+    /// <summary>Refresh the category dropdown from the loaded rows, in the Add Item tab's order.</summary>
+    private void RefreshInventoryCategories()
+    {
+        var present = _allItems.Select(r => r.Category).ToHashSet();
+        var wanted = new List<string> { "All" };
+        wanted.AddRange(Categories.Where(present.Contains));
+        wanted.AddRange(present.Where(c => !Categories.Contains(c)).OrderBy(c => c == AioCatalog.OtherCategory).ThenBy(c => c));
+        if (wanted.SequenceEqual(InventoryCategories)) return;
+        var keep = InventoryCategory;
+        InventoryCategories.Clear();
+        foreach (var c in wanted) InventoryCategories.Add(c);
+        InventoryCategory = wanted.Contains(keep) ? keep : "All";
+    }
+
     private void ApplyFilter()
     {
         Items.Clear();
         IEnumerable<ItemRow> q = _allItems;
+        if (InventoryCategory is not (null or "All"))
+            q = q.Where(i => i.Category == InventoryCategory);
         if (!string.IsNullOrWhiteSpace(Search))
             q = q.Where(i => i.Display.Contains(Search, StringComparison.OrdinalIgnoreCase)
                           || i.HashHex.Contains(Search, StringComparison.OrdinalIgnoreCase));
@@ -238,15 +297,11 @@ public partial class MainWindowViewModel : ObservableObject
         try
         {
             var save = _save;
-            var money = Money;
-            var edits = _allItems.Select(r => (r.Hash, r.Quantity)).ToArray();
+            ApplyPendingEdits(save);
             var attrEdits = Attributes.Select(a => (a.RawName, a.Value)).ToArray();
             var pointEdits = DevPoints.Select(d => (d.RawType, d.Unspent)).ToArray();
             await Task.Run(() =>
             {
-                InventoryEditor.SetMoney(save, money);
-                foreach (var (hash, qty) in edits)
-                    InventoryEditor.SetQuantity(save, hash, qty);
                 foreach (var (name, val) in attrEdits)
                     PlayerDevelopment.SetAttribute(save, name, val);
                 foreach (var (type, unspent) in pointEdits)
@@ -264,6 +319,15 @@ public partial class MainWindowViewModel : ObservableObject
         finally { IsBusy = false; }
     }
 
+    /// <summary>Write edits back over the loaded save file (same name and folder). The original is
+    /// backed up first by SaveToPathAsync.</summary>
+    [RelayCommand]
+    private Task SaveCurrentAsync()
+    {
+        if (string.IsNullOrEmpty(LoadedPath)) { Status = "Open a save first."; return Task.CompletedTask; }
+        return SaveToPathAsync(LoadedPath);
+    }
+
     /// <summary>Write current edits as a brand-new Manual save in the game's saves folder, so it
     /// appears in the in-game load menu. No file dialog needed.</summary>
     [RelayCommand]
@@ -279,15 +343,12 @@ public partial class MainWindowViewModel : ObservableObject
         {
             var save = _save;
             var srcFolder = Path.GetDirectoryName(LoadedPath)!;
-            var money = Money;
-            var itemEdits = _allItems.Select(r => (r.Hash, r.Quantity)).ToArray();
+            ApplyPendingEdits(save);
             var attrEdits = Attributes.Select(a => (a.RawName, a.Value)).ToArray();
             var pointEdits = DevPoints.Select(d => (d.RawType, d.Unspent)).ToArray();
 
             var (folder, hadMeta) = await Task.Run(() =>
             {
-                InventoryEditor.SetMoney(save, money);
-                foreach (var (hash, qty) in itemEdits) InventoryEditor.SetQuantity(save, hash, qty);
                 foreach (var (name, val) in attrEdits) PlayerDevelopment.SetAttribute(save, name, val);
                 foreach (var (type, un) in pointEdits) PlayerDevelopment.SetUnspentPoints(save, type, un);
 

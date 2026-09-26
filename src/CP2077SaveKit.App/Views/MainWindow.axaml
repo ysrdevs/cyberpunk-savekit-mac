@@ -18,6 +18,8 @@
         <!-- Toolbar -->
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8">
             <Button Name="OpenBtn" Content="Open Save…"/>
+            <Button Content="Save" Command="{Binding SaveCurrentCommand}" IsEnabled="{Binding IsLoaded}"
+                    ToolTip.Tip="Overwrite the loaded save file (a timestamped backup is made first)"/>
             <Button Name="SaveAsBtn" Content="Save As…" IsEnabled="{Binding IsLoaded}"/>
             <Button Content="Save to New Slot" Command="{Binding SaveToNewSlotCommand}" IsEnabled="{Binding IsLoaded}"/>
             <Button Content="Check for Updates" Command="{Binding CheckForUpdatesCommand}"/>
@@ -79,7 +81,9 @@
                                 IsEnabled="{Binding IsLoaded}">
                         <TextBlock Text="Eddies:" VerticalAlignment="Center"/>
                         <TextBox Text="{Binding Money}" Width="160"/>
-                        <TextBlock Text="Search:" VerticalAlignment="Center" Margin="16,0,0,0"/>
+                        <TextBlock Text="Category:" VerticalAlignment="Center" Margin="16,0,0,0"/>
+                        <ComboBox ItemsSource="{Binding InventoryCategories}" SelectedItem="{Binding InventoryCategory}" Width="140"/>
+                        <TextBlock Text="Search:" VerticalAlignment="Center" Margin="8,0,0,0"/>
                         <TextBox Text="{Binding Search}" Width="300" Watermark="filter items by name or hash"/>
                     </StackPanel>
                     <Border BorderBrush="#33FFFFFF" BorderThickness="1" CornerRadius="4">
