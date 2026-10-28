@@ -15,6 +15,8 @@ public sealed class ItemClasses
     private readonly Dictionary<ulong, ItemClassRecord> _byHash;
     private ItemClasses(Dictionary<ulong, ItemClassRecord> map) => _byHash = map;
 
+    public int Count => _byHash.Count;
+
     public ItemClassRecord? Get(ulong hash) => _byHash.TryGetValue(hash, out var r) ? r : null;
 
     private static string DefaultPath => Path.Combine(AppContext.BaseDirectory, "Resources", "ItemClasses.json");

@@ -1,13 +1,18 @@
 using CP2077SaveKit.Core;
+using CP2077SaveKit.Cli;
 
 // Tiny test harness for the Core layer. Usage:
-//   cli info     <sav.dat>            -> header + node summary
-//   cli dump     <sav.dat> [out.json] -> full node tree to JSON
-//   cli roundtrip <sav.dat> <out.dat> -> load + write back unchanged (integrity test)
+//   cli info      <sav.dat>            -> header + node summary
+//   cli dump      <sav.dat> [out.json] -> full node tree to JSON
+//   cli inv       <sav.dat>            -> list inventory
+//   cli attrs     <sav.dat>            -> attributes / points / skills
+//   cli qty       <sav.dat> <id|0xhash>-> effective quantity for an item hash
+//   cli selftest  <sav.dat>            -> quantity-editing regression check (in memory only)
+//   cli roundtrip <sav.dat> <out.dat>  -> load + write back unchanged (integrity test)
 
 if (args.Length < 2)
 {
-    Console.Error.WriteLine("usage: cli <info|dump|roundtrip> <sav.dat> [out]");
+    Console.Error.WriteLine("usage: cli <info|dump|inv|attrs|qty|selftest|roundtrip> <sav.dat> [out]");
     return 1;
 }
 
@@ -121,6 +126,10 @@ try
             save.Save(args[2]);
             Console.WriteLine($"Eddies {before:n0} -> {amount:n0}. Wrote {args[2]}.");
             break;
+        }
+        case "selftest":
+        {
+            return SelfTest.Run(path);
         }
         case "roundtrip":
         {

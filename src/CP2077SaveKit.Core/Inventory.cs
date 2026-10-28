@@ -3,8 +3,9 @@ using WolvenKit.RED4.Types;
 
 namespace CP2077SaveKit.Core;
 
-/// <summary>A single item in a sub-inventory, surfaced for the UI/CLI.</summary>
-public sealed record InventoryItem(ulong IdHash, string? Name, uint Quantity, byte Flags)
+/// <summary>A single item in a sub-inventory, surfaced for the UI/CLI. SubInventoryId + Index
+/// locate this exact entry, since the same item can appear in several sub-inventories.</summary>
+public sealed record InventoryItem(ulong IdHash, string? Name, uint Quantity, byte Flags, ulong SubInventoryId, int Index)
 {
     public string Display => Name ?? $"<unresolved 0x{IdHash:X16}>";
 }
@@ -26,15 +27,16 @@ public static class InventoryReader
         foreach (var sub in inv.SubInventories)
         {
             var items = new List<InventoryItem>(sub.Items.Count);
-            foreach (var item in sub.Items)
+            for (var i = 0; i < sub.Items.Count; i++)
             {
+                var item = sub.Items[i];
                 var tdbid = item.ItemInfo.ItemId.Id;
                 ulong hash = tdbid;                       // TweakDBID -> ulong (implicit)
                 // friendly name (curated) -> items.bin code-name -> AIO code id (current items) -> hash
                 string? name = AioCatalog.Shared.FriendlyName(hash)
                              ?? TweakDbNames.Shared.Resolve(hash)
                              ?? AioCatalog.Shared.CodeId(hash);
-                items.Add(new InventoryItem(hash, name, item.Quantity, (byte)item.Flags));
+                items.Add(new InventoryItem(hash, name, item.Quantity, (byte)item.Flags, sub.InventoryId, i));
             }
             result.Add(new SubInventoryView(sub.InventoryId, items));
         }
