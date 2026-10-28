@@ -94313,5 +94313,964 @@
         "Slot": 132998795507
       }
     ]
+  },
+  "73020674584": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "73324972345": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "75898829360": {
+    "Type": "Item",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "76140710421": {
+    "Type": "Cyberware",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "88161607741": {
+    "Type": "Weapon",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": [
+      {
+        "ItemPartPreset": 177066299039,
+        "Slot": 105238933355
+      },
+      {
+        "ItemPartPreset": 184442461598,
+        "Slot": 97104548228
+      },
+      {
+        "ItemPartPreset": 191906820673,
+        "Slot": 105403780121
+      },
+      {
+        "ItemPartPreset": 195110373161,
+        "Slot": 127320661696
+      },
+      {
+        "ItemPartPreset": 105654315203,
+        "Slot": 175478603208
+      }
+    ]
+  },
+  "89174649586": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "89289889606": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "92997638346": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "93347696532": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "95812449410": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "96374298382": {
+    "Type": "WeaponMod",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "97062424365": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "97707798287": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "98096369374": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "99125204752": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "99142401814": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "99207394700": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "99208718167": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "99467615561": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "99654107290": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "99681357457": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "99709931687": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "99899932167": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "99920114709": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "99980026920": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "100063998541": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "100104242258": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "100438486420": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "100450805638": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "100551246083": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "100634712001": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "100740226766": {
+    "Type": "Weapon",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": [
+      {
+        "ItemPartPreset": 177066299039,
+        "Slot": 105238933355
+      },
+      {
+        "ItemPartPreset": 184442461598,
+        "Slot": 97104548228
+      },
+      {
+        "ItemPartPreset": 191906820673,
+        "Slot": 105403780121
+      },
+      {
+        "ItemPartPreset": 195110373161,
+        "Slot": 127320661696
+      },
+      {
+        "ItemPartPreset": 105654315203,
+        "Slot": 175478603208
+      }
+    ]
+  },
+  "100936300269": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "101055209519": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "101143006392": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "101155849898": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "101380907712": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "101492715372": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "101506945889": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "101624333572": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "101677375275": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "101699130681": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "102311814216": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "102362915831": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "102453913007": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "102477032356": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "102513997202": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "102523511670": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "102690194504": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "102813876834": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "102816747705": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "103004830766": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "103032107557": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "103140627633": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "103504963593": {
+    "Type": "Weapon",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": [
+      {
+        "ItemPartPreset": 85621964897,
+        "Slot": 88002875893
+      },
+      {
+        "ItemPartPreset": 111631930566,
+        "Slot": 163179493980
+      }
+    ]
+  },
+  "103560261136": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "103572055042": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "103811167159": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "103964046558": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "104033686504": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "104136362642": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "104234188881": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "104287566340": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "104885591686": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "104908640397": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "105021431870": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "105273408435": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "105300719032": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "105654315203": {
+    "Type": "WeaponMod",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "105673409803": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "105842194475": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "105864993576": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "105945620861": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "105949555567": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "106423633368": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "106675924903": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "106801582571": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "107066389917": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "107149938492": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "107163305262": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "107573498499": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "107852611307": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "108509439869": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "108515547146": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "108750603227": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "108875476256": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "110200141485": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "111041970029": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "111631930566": {
+    "Type": "WeaponMod",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "112143649797": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "112167917752": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "112356278556": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "112888264875": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "113559369499": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "113705984208": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "113861942267": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "114319555599": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "114464938375": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "114518450297": {
+    "Type": "Item",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "114901548067": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "115121801366": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "115186297105": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "115359358770": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "115853878732": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "116433565009": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "116948263315": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "118061712456": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "118075466509": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "119137637388": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "119735250103": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "120176950398": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "120651469735": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "121044375594": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "121546065826": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "123091718918": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "123297627160": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "123813406128": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "124776129874": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "125045458173": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "125490303884": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "125863150778": {
+    "Type": "ItemRecipe",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "125933383041": {
+    "Type": "Item",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "126337512555": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "126773040455": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "127270022262": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "128212936693": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "128650437064": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "129687576869": {
+    "Type": "Weapon",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": [
+      {
+        "ItemPartPreset": 107714030146,
+        "Slot": 88002875893
+      }
+    ]
+  },
+  "130112085092": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "130972252533": {
+    "Type": "Weapon",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": [
+      {
+        "ItemPartPreset": 148727636493,
+        "Slot": 105238933355
+      },
+      {
+        "ItemPartPreset": 154337299738,
+        "Slot": 97104548228
+      },
+      {
+        "ItemPartPreset": 160922149698,
+        "Slot": 105403780121
+      },
+      {
+        "ItemPartPreset": 167313697282,
+        "Slot": 127320661696
+      },
+      {
+        "ItemPartPreset": 107240511190,
+        "Slot": 175478603208
+      }
+    ]
+  },
+  "134615116864": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "136352146342": {
+    "Type": "Clothing",
+    "IsSingleInstance": false,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "138686944036": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "139081048323": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "150405115474": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "152578967794": {
+    "Type": "Item",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "156549550671": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "157918281188": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "161260523915": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "166427972749": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "166952497202": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "171594689033": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "172962168727": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "180288968406": {
+    "Type": "Item",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "201594040018": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "204765887219": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
+  },
+  "218311129873": {
+    "Type": "General",
+    "IsSingleInstance": true,
+    "IsItemPlus": 0,
+    "SlotParts": []
   }
 }

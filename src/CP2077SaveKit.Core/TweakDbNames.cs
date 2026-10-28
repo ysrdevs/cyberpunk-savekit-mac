@@ -18,6 +18,9 @@ public sealed class TweakDbNames
 
     public string? Resolve(ulong hash) => _byHash.TryGetValue(hash, out var n) ? n : null;
 
+    /// <summary>Every name in the list (unordered). Used by the data refresh tool to rebuild items.bin.</summary>
+    public IEnumerable<string> AllNames() => _byHash.Values;
+
     /// <summary>Names matching a substring (case-insensitive), capped. For the "add item" picker.</summary>
     public IEnumerable<string> Search(string term, int limit = 200) =>
         _byHash.Values.Where(v => v.Contains(term, StringComparison.OrdinalIgnoreCase)).Take(limit);
@@ -55,6 +58,15 @@ public sealed class TweakDbNames
 
     public static ulong TweakHash(string name) =>
         Crc32(Encoding.ASCII.GetBytes(name)) + ((ulong)name.Length << 32);
+
+    /// <summary>
+    /// A catalog id ("Items.Foo") or a literal hash ("0x00000016BFD6AF0F", used for the item ids
+    /// that have no known name) to its TweakDBID value.
+    /// </summary>
+    public static ulong ParseId(string idOrHash) =>
+        idOrHash.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
+            ? Convert.ToUInt64(idOrHash[2..], 16)
+            : TweakHash(idOrHash);
 
     private static int IndexOf(byte[] hay, int len, ReadOnlySpan<byte> needle)
     {

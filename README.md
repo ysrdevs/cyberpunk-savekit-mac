@@ -8,7 +8,9 @@ Whisky, or a VM. CP2077 Save Kit runs as a real arm64 macOS app with no compatib
 reads and writes the same `sav.dat` format the game uses, so edits made here load directly in the
 native Mac build of the game.
 
-> Status: v1. Verified in game on patch 2.3 (game version 2310), Apple Silicon.
+> Status: v1. Verified in game on patch 2.3 (game version 2310), Apple Silicon. Item data and the
+> save-format handling were refreshed against patch 2.5 (game version 2500); saving into a 2.5 save
+> requires the parser patch applied in the Build step below.
 
 ## Download and install
 
@@ -115,6 +117,27 @@ Name resolution prefers the curated catalog name, then the TweakDB code name, th
 then the raw hash. Coverage on a real save is about 79 percent; the remainder are runtime or
 procedurally generated item ids that have no static name anywhere.
 
+### Keeping the item data current
+
+The bundled data is a snapshot of one game patch. `tools/CP2077SaveKit.DataTool` refreshes it from
+an installed game (it reads `r6/cache/tweakdb.bin` + `tweakdb_ep1.bin` directly, and names are
+harvested from the game's own binaries):
+
+```sh
+GAME="$HOME/Library/Application Support/Steam/steamapps/common/Cyberpunk 2077"
+
+dotnet run --project tools/CP2077SaveKit.DataTool -c Release -- diag     # what the bundle is missing
+dotnet run --project tools/CP2077SaveKit.DataTool -c Release -- classes  # ItemClasses.json  (+ records)
+dotnet run --project tools/CP2077SaveKit.DataTool -c Release -- catalog  # aio_catalog.json  (+ items)
+dotnet run --project tools/CP2077SaveKit.DataTool -c Release -- names    # items.bin        (+ names)
+dotnet run --project tools/CP2077SaveKit.DataTool -c Release -- verify <original> <written>
+```
+
+`diag`, `mapping`, `slots` and `dump <Items.Foo>` are read-only and report how the derivation lines
+up with the bundled metadata before anything is rewritten. `--extra <file>` layers an additional
+name list (a `.txt` of names, or JSON holding strings or objects with `id`) on top of the bundled
+one, for ids no local source names.
+
 ## Requirements
 
 - macOS on Apple Silicon (built and verified on arm64).
@@ -132,15 +155,27 @@ The Core project references `WolvenKit.RED4` by relative path, so WolvenKit must
 git clone https://github.com/WolvenKit/WolvenKit.git _refs/WolvenKit
 git -C _refs/WolvenKit checkout a5d01243d61d4b3985a208b66708662d8ecde8a1
 
-# 2. install .NET 8 if needed (official script, no sudo, installs to ~/.dotnet)
+# 2. patch it for 2.5 save support (required to save into a 2.5 save, see below)
+build/apply-wolvenkit-2.5-patch.sh
+
+# 3. install .NET 8 if needed (official script, no sudo, installs to ~/.dotnet)
 curl -fsSL https://dot.net/v1/dotnet-install.sh | bash -s -- --channel 8.0 --install-dir "$HOME/.dotnet"
 export PATH="$HOME/.dotnet:$PATH"
 
-# 3. build
+# 4. build
 dotnet build CP2077SaveKit.sln -c Release
 ```
 
 A newer WolvenKit commit will probably still work, but the pinned one is the known-good build.
+
+**Why step 2 is required for 2.5 saves.** Patch 2.5 moved entity stats into a shared, indexed layout
+(`gameStatsStateMapStructure.ValuesOptimized` with `sharedDataBuffer` slices) that the pinned
+WolvenKit predates. Reading such a save works, so the app looks fine, but writing one silently drops
+that data (an unedited round trip lost 88,510 B from `PersistencySystem2` on a real 2.5 save). The
+script applies the upstream fix from the [CP2077 Save Editor](https://github.com/AtfastrSlushyMaker/cyberpunk-2077-save-editor-gui)
+project to the local clone; with it, an unedited round trip is byte-for-byte identical after
+decompression, and `datatool verify` checks exactly that. The patch is fetched rather than vendored
+because it is GPL-3.0-derived third-party work.
 
 ## Run
 
@@ -169,6 +204,8 @@ SAVE="$HOME/Library/Application Support/CD Projekt Red/Cyberpunk 2077/saves/<fol
 dotnet run --project src/CP2077SaveKit.Cli -- info       "$SAVE"            # header + node summary
 dotnet run --project src/CP2077SaveKit.Cli -- inv        "$SAVE"            # list inventory
 dotnet run --project src/CP2077SaveKit.Cli -- attrs      "$SAVE"            # attributes / points / skills
+dotnet run --project src/CP2077SaveKit.Cli -- qty        "$SAVE" Items.money # effective quantity for an id
+dotnet run --project src/CP2077SaveKit.Cli -- selftest   "$SAVE"            # quantity semantics regression check
 dotnet run --project src/CP2077SaveKit.Cli -- dump       "$SAVE" tree.json  # full node tree to JSON
 dotnet run --project src/CP2077SaveKit.Cli -- additem    "$SAVE" out.dat "Items.Preset_Silverhand_3516" 1
 dotnet run --project src/CP2077SaveKit.Cli -- setmoney   "$SAVE" out.dat 1000000
@@ -226,22 +263,44 @@ Every risky write was confirmed by loading the result in the actual game on patc
   finalizes weapon stats on load, so no stat data synthesis is needed.
 - An attribute point edit appears on the character screen.
 
+Automated checks that back the above (no game required):
+
+- `cli selftest <sav.dat>` reproduces the multi-sub-inventory money shape and asserts the
+  read/write semantics: 12/12 on a real patch-2.5 save.
+- `datatool verify <original> <written>` decompresses both saves and compares them byte for byte:
+  an unedited round trip of a real patch-2.5 save is identical across all 7,833,333 bytes.
+- Items the bundle never knew about construct from the refreshed metadata: adding
+  `Items.Coat_07_basic_01` (2.5 clothing, `Clothing`, no slot parts) and `Items.Preset_Chao_Default`
+  (2.5 weapon, `Weapon` with its 4 mod-slot parts) both land in the inventory with the right type and
+  the node count unchanged.
+
 ## Limitations
 
-- Name coverage is about 79 percent. Items with no static name show their raw hash.
+- Name coverage: on a real patch-2.5 save all 125 inventory entries resolve after the data refresh.
+  Items whose ids exist in no local source still show `0x…` (1,118 of the 10,191 catalog entries are
+  hash-labelled because the game ships no name table and the localized names are in Oodle archives),
+  and a couple of thousand ids outside the item families (facts, quest nodes) remain unresolved.
 - Catalog names come from the community spreadsheet, so they read like the game but can carry the
   spreadsheet's quirks. True localized names live in the game's Oodle compressed locale archives,
-  which this project does not read.
+  which this project does not read — so 2.5 items added by the refresh show their code id, item type
+  and tier (e.g. `Items.Coat_07_basic_01 · Outer Chest · TIER 5`) rather than an in-game name.
 - Vehicles are managed by a separate garage system and are not in the add-item picker.
+- Saves written from a 2.5 save preserve every decompressed byte of the original (checked with
+  `datatool verify`), but loading an *edited* 2.5 save in game has not been verified here; that needs
+  the game. Test in a spare slot.
 
 ## Credits
 
 - [WolvenKit](https://github.com/WolvenKit/WolvenKit) for the save parser and RED type system.
+- [CP2077 Save Editor](https://github.com/AtfastrSlushyMaker/cyberpunk-2077-save-editor-gui) (MIT) for
+  the patch 2.5 save-format support that `build/apply-wolvenkit-2.5-patch.sh` applies to WolvenKit.
 - [CyberCAT-SimpleGUI](https://www.nexusmods.com/cyberpunk2077/mods/718) for `items.bin` and
   `ItemClasses.json`.
 - The [Categorized AIO Command List](https://www.nexusmods.com/cyberpunk2077/mods/521) by
   **Silverhandsome** for the item catalog. The breadth and quality of that list is what makes the
   add-item picker possible. Great work.
+- `#3` (@JensPenneman) and `#4` (@jwestb1) for the eddies/save-loop fixes in `InventoryEditor` and
+  the GUI.
 
 ## License
 
